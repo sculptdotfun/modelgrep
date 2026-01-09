@@ -296,7 +296,7 @@ class APIHandler(SimpleHTTPRequestHandler):
 
     def handle_models(self, parsed):
         params = parse_qs(parsed.query)
-        models = get_cached_models()
+        models = cached_models  # Use cached directly, don't block
 
         # Apply filters
         filtered = self.apply_filters(models, params)
@@ -311,6 +311,7 @@ class APIHandler(SimpleHTTPRequestHandler):
         offset = int(params.get("offset", [0])[0])
 
         result = {
+            "loading": cache_loading and len(cached_models) == 0,
             "total": len(filtered),
             "models": filtered[offset:offset + limit]
         }
@@ -385,15 +386,20 @@ class APIHandler(SimpleHTTPRequestHandler):
         self.send_json({"status": "ok", "count": len(models)})
 
     def handle_stats(self):
-        models = get_cached_models()
+        models = cached_models
+
+        if not models:
+            self.send_json({"loading": True, "total_models": 0})
+            return
 
         stats = {
+            "loading": cache_loading,
             "total_models": len(models),
             "with_throughput": len([m for m in models if m["throughput"] > 0]),
             "with_latency": len([m for m in models if m["latency"]]),
             "providers": list(set(p for m in models for p in m["providers"])),
             "modalities": list(set(m["modality"] for m in models)),
-            "max_context": max((m["context_length"] or 0) for m in models),
+            "max_context": max((m["context_length"] or 0) for m in models) if models else 0,
         }
 
         self.send_json(stats)
@@ -431,30 +437,17 @@ class APIHandler(SimpleHTTPRequestHandler):
             print(f"[API] {args[0]}")
 
 
-def warmup_cache():
-    """Warm up cache on startup - load from file or fetch"""
-    global cached_models, cache_timestamp
+cache_loading = False
 
-    # First try to load from file cache (fast startup)
-    if os.path.exists(CACHE_FILE):
-        try:
-            with open(CACHE_FILE, 'r') as f:
-                data = json.load(f)
-                cached_models = data.get("models", [])
-                cache_timestamp = data.get("timestamp", 0)
-                print(f"Loaded {len(cached_models)} models from disk cache")
 
-                # If cache is stale, refresh in background
-                if time.time() - cache_timestamp > CACHE_TTL:
-                    print("Cache is stale, refreshing in background...")
-                    threading.Thread(target=lambda: get_cached_models(force_refresh=True), daemon=True).start()
-                return
-        except Exception as e:
-            print(f"Cache load failed: {e}")
-
-    # No cache file - fetch synchronously on first startup
-    print("No cache found, fetching all model data (this may take a minute)...")
-    get_cached_models(force_refresh=True)
+def warmup_cache_background():
+    """Fetch models in background"""
+    global cache_loading
+    cache_loading = True
+    try:
+        get_cached_models(force_refresh=True)
+    finally:
+        cache_loading = False
 
 
 def main():
@@ -462,8 +455,21 @@ def main():
 
     print(f"Starting OpenRouter Explorer on http://localhost:{port}")
 
-    # Warm up cache before accepting requests
-    warmup_cache()
+    # Try to load from disk cache first
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                data = json.load(f)
+                global cached_models, cache_timestamp
+                cached_models = data.get("models", [])
+                cache_timestamp = data.get("timestamp", 0)
+                print(f"Loaded {len(cached_models)} models from disk cache")
+        except Exception as e:
+            print(f"Cache load failed: {e}")
+
+    # Start fetching in background - don't block server startup
+    print("Starting background model fetch...")
+    threading.Thread(target=warmup_cache_background, daemon=True).start()
 
     server = HTTPServer(("", port), APIHandler)
     print(f"Server ready at http://localhost:{port}")
