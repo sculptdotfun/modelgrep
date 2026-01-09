@@ -463,11 +463,12 @@
         <div class="nav-label">Quick Filters</div>
         <button class="nav-btn active" data-preset="all">All Models</button>
         <button class="nav-btn" data-preset="fast">Fastest <span class="nav-badge">>200 t/s</span></button>
+        <button class="nav-btn" data-preset="lowlat">Low Latency <span class="nav-badge">&lt;200ms</span></button>
         <button class="nav-btn" data-preset="cheap">Budget <span class="nav-badge">&lt;$1/M</span></button>
         <button class="nav-btn" data-preset="free">Free Tier</button>
         <button class="nav-btn" data-preset="vision">Vision</button>
-        <button class="nav-btn" data-preset="longctx">Long Context <span class="nav-badge">>100k</span></button>
-        <button class="nav-btn" data-preset="lowlat">Low Latency <span class="nav-badge">&lt;200ms</span></button>
+        <button class="nav-btn" data-preset="longctx">Long Context <span class="nav-badge">>128k</span></button>
+        <button class="nav-btn" data-preset="coding">Coding <span class="nav-badge">top picks</span></button>
       </nav>
 
       <div class="sidebar-stats">
@@ -610,9 +611,16 @@
 
     function filter() {
       const f = getF();
+      // Support multi-word OR search: "claude gpt" matches either
+      const terms = f.q.split(/\s+/).filter(t => t.length > 0);
+
       let list = models.filter(m => {
         if (m.id.startsWith('openrouter/')) return false;
-        if (f.q && !m.id.toLowerCase().includes(f.q) && !m.name.toLowerCase().includes(f.q)) return false;
+        // Multi-term search: match ANY term (OR logic)
+        if (terms.length > 0) {
+          const text = (m.id + ' ' + m.name).toLowerCase();
+          if (!terms.some(t => text.includes(t))) return false;
+        }
         if ((m.throughput || 0) < f.tp) return false;
         if (f.lat !== Infinity && (!m.latency || m.latency > f.lat)) return false;
         if ((m.price_input || 0) > f.pIn) return false;
@@ -735,8 +743,9 @@
         case 'cheap': $('#f-in').value = '1'; $('#f-out').value = '1'; break;
         case 'free': $('#t-free').classList.add('active'); break;
         case 'vision': $('#t-vision').classList.add('active'); break;
-        case 'longctx': $('#f-ctx').value = '100'; break;
+        case 'longctx': $('#f-ctx').value = '128'; break;
         case 'lowlat': $('#f-lat').value = '200'; break;
+        case 'coding': $('#search').value = 'sonnet opus gpt-4o deepseek-v3 qwen-2.5 coder gemini-2'; break;
       }
       filter();
     }
