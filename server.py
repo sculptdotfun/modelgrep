@@ -19,6 +19,7 @@ FAL_API_URL = "https://api.fal.ai/v1"
 CACHE_FILE = "model_cache.json"
 FAL_CACHE_FILE = "fal_cache.json"
 CACHE_TTL = 300  # 5 minutes
+FAL_CACHE_TTL = 21600  # 6 hours
 
 cached_models = []
 cache_timestamp = 0
@@ -361,7 +362,7 @@ def get_cached_fal_models(force_refresh=False):
         now = time.time()
 
         # Check if cache is valid
-        if not force_refresh and cached_fal_models and (now - fal_cache_timestamp) < CACHE_TTL:
+        if not force_refresh and cached_fal_models and (now - fal_cache_timestamp) < FAL_CACHE_TTL:
             return cached_fal_models
 
         # Try to load from file cache
@@ -369,7 +370,7 @@ def get_cached_fal_models(force_refresh=False):
             try:
                 with open(FAL_CACHE_FILE, 'r') as f:
                     data = json.load(f)
-                    if now - data.get("timestamp", 0) < CACHE_TTL:
+                    if now - data.get("timestamp", 0) < FAL_CACHE_TTL:
                         cached_fal_models = data["models"]
                         fal_cache_timestamp = data["timestamp"]
                         print(f"Loaded {len(cached_fal_models)} FAL models from cache")
