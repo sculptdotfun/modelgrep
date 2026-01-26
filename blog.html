@@ -3,17 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog - modelgrep | AI Model Guides & Comparisons</title>
-  <meta name="description" content="Guides and insights on choosing, comparing, and using AI models. Learn about LLM pricing, performance, and best practices.">
+  <title id="page-title">Blog - modelgrep</title>
+  <meta name="description" id="page-desc" content="Guides and insights on choosing, comparing, and using AI models.">
   <meta name="robots" content="index, follow">
-
-  <meta property="og:title" content="modelgrep Blog - AI Model Guides">
-  <meta property="og:description" content="Guides and insights on choosing, comparing, and using AI models.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://modelgrep.com/blog">
-
+  <meta property="og:type" content="article">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="canonical" href="https://modelgrep.com/blog">
+  <link rel="canonical" id="canonical" href="https://modelgrep.com/blog">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -32,6 +27,9 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+    a { color: #a78bfa; text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     .header {
       border-bottom: 1px solid #1f1f23;
@@ -53,210 +51,100 @@
       text-decoration: none;
     }
 
-    .nav {
-      display: flex;
-      gap: 24px;
-    }
+    .logo:hover { text-decoration: none; }
 
-    .nav a {
-      color: #a1a1aa;
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.15s;
-    }
-
-    .nav a:hover { color: #e4e4e7; }
+    .nav { display: flex; gap: 24px; }
+    .nav a { color: #a1a1aa; font-size: 14px; transition: color 0.15s; }
+    .nav a:hover { color: #e4e4e7; text-decoration: none; }
     .nav a.active { color: #a78bfa; }
 
     .container {
-      max-width: 900px;
+      max-width: 680px;
       margin: 0 auto;
-      padding: 48px 24px;
+      padding: 48px 24px 80px;
     }
 
-    .page-title {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    /* Blog index */
+    .page-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+    .page-subtitle { color: #71717a; font-size: 16px; margin-bottom: 48px; }
 
-    .page-subtitle {
-      color: #71717a;
-      font-size: 16px;
-      margin-bottom: 48px;
-    }
-
-    .posts {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
+    .posts { display: flex; flex-direction: column; gap: 16px; }
 
     .post-card {
       background: #111113;
       border: 1px solid #1f1f23;
       border-radius: 12px;
-      padding: 24px;
+      padding: 20px 24px;
       text-decoration: none;
       color: inherit;
       transition: border-color 0.15s, transform 0.15s;
+      display: block;
     }
 
-    .post-card:hover {
-      border-color: #7c3aed;
-      transform: translateY(-2px);
-    }
-
-    .post-meta {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .post-card:hover { border-color: #3f3f46; transform: translateY(-1px); text-decoration: none; }
 
     .post-tag {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      padding: 4px 8px;
-      border-radius: 4px;
-      background: #7c3aed20;
       color: #a78bfa;
-    }
-
-    .post-date {
-      font-size: 12px;
-      color: #52525b;
-    }
-
-    .post-title {
-      font-size: 20px;
-      font-weight: 600;
       margin-bottom: 8px;
-      color: #e4e4e7;
+      display: inline-block;
     }
 
-    .post-excerpt {
-      color: #a1a1aa;
-      font-size: 14px;
-      line-height: 1.6;
-    }
+    .post-title { font-size: 18px; font-weight: 600; color: #e4e4e7; margin-bottom: 6px; }
+    .post-excerpt { color: #71717a; font-size: 14px; line-height: 1.5; }
 
-    .post-read {
+    /* Article */
+    .article { display: none; }
+    .article.active { display: block; }
+
+    .back-link {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      margin-top: 16px;
-      font-size: 13px;
-      color: #7c3aed;
-      font-weight: 500;
-    }
-
-    /* Article page styles */
-    .article {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 48px 24px;
-    }
-
-    .article-header {
-      margin-bottom: 32px;
-    }
-
-    .article h1 {
-      font-size: 36px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-
-    .article-meta {
-      display: flex;
-      gap: 16px;
+      gap: 6px;
       color: #71717a;
       font-size: 14px;
+      margin-bottom: 32px;
     }
+    .back-link:hover { color: #a1a1aa; text-decoration: none; }
 
-    .article-content {
-      font-size: 16px;
-      line-height: 1.8;
-    }
-
-    .article-content h2 {
-      font-size: 24px;
-      font-weight: 600;
-      margin: 32px 0 16px;
-      color: #e4e4e7;
-    }
-
-    .article-content h3 {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 24px 0 12px;
-      color: #e4e4e7;
-    }
-
-    .article-content p {
+    .article h1 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.25;
       margin-bottom: 16px;
-      color: #a1a1aa;
+      color: #fff;
     }
 
-    .article-content ul, .article-content ol {
-      margin: 16px 0;
-      padding-left: 24px;
-      color: #a1a1aa;
-    }
+    .article-meta { color: #52525b; font-size: 13px; margin-bottom: 32px; }
 
-    .article-content li {
-      margin-bottom: 8px;
-    }
-
-    .article-content strong {
-      color: #e4e4e7;
-    }
-
-    .article-content a {
-      color: #a78bfa;
-      text-decoration: none;
-    }
-
-    .article-content a:hover {
-      text-decoration: underline;
-    }
-
+    .article-content { font-size: 16px; line-height: 1.75; }
+    .article-content h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; color: #e4e4e7; }
+    .article-content h3 { font-size: 17px; font-weight: 600; margin: 28px 0 12px; color: #e4e4e7; }
+    .article-content p { margin-bottom: 20px; color: #a1a1aa; }
+    .article-content ul, .article-content ol { margin: 20px 0; padding-left: 24px; color: #a1a1aa; }
+    .article-content li { margin-bottom: 10px; }
+    .article-content strong { color: #e4e4e7; font-weight: 600; }
     .article-content code {
       font-family: 'JetBrains Mono', monospace;
       background: #18181b;
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 14px;
-    }
-
-    .article-content blockquote {
-      border-left: 3px solid #7c3aed;
-      padding-left: 16px;
-      margin: 24px 0;
-      color: #71717a;
-      font-style: italic;
-    }
-
-    .cta-box {
-      background: linear-gradient(135deg, #7c3aed20, #7c3aed10);
-      border: 1px solid #7c3aed40;
-      border-radius: 12px;
-      padding: 24px;
-      margin: 32px 0;
-      text-align: center;
-    }
-
-    .cta-box h3 {
-      margin: 0 0 8px;
       color: #e4e4e7;
     }
 
-    .cta-box p {
-      margin: 0 0 16px;
-      color: #a1a1aa;
+    .cta-box {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 40px 0;
     }
+
+    .cta-box p { margin: 0 0 16px; color: #a1a1aa; }
+    .cta-box p:last-child { margin: 0; }
 
     .cta-btn {
       display: inline-block;
@@ -264,23 +152,23 @@
       color: white;
       padding: 10px 20px;
       border-radius: 8px;
-      text-decoration: none;
       font-weight: 500;
+      font-size: 14px;
       transition: background 0.15s;
     }
 
-    .cta-btn:hover { background: #6d28d9; }
+    .cta-btn:hover { background: #6d28d9; text-decoration: none; }
+
+    .divider { height: 1px; background: #1f1f23; margin: 40px 0; }
 
     @media (max-width: 768px) {
       .header { padding: 12px 16px; }
       .nav { gap: 16px; }
       .nav a { font-size: 13px; }
-      .container { padding: 32px 16px; }
+      .container { padding: 32px 16px 60px; }
       .page-title { font-size: 24px; }
-      .post-card { padding: 20px; }
-      .post-title { font-size: 18px; }
-      .article { padding: 32px 16px; }
-      .article h1 { font-size: 28px; }
+      .article h1 { font-size: 26px; }
+      .article-content h2 { font-size: 20px; }
     }
   </style>
 </head>
@@ -295,70 +183,446 @@
   </header>
 
   <div class="container">
-    <h1 class="page-title">Blog</h1>
-    <p class="page-subtitle">Guides and insights on choosing and using AI models</p>
+    <!-- Blog Index -->
+    <div id="blog-index">
+      <h1 class="page-title">Blog</h1>
+      <p class="page-subtitle">Practical guides for working with AI models</p>
 
-    <div class="posts">
-      <a href="/blog/how-to-choose-llm" class="post-card">
-        <div class="post-meta">
+      <div class="posts">
+        <a href="/blog/how-to-choose-llm" class="post-card" data-article="how-to-choose-llm">
           <span class="post-tag">Guide</span>
-          <span class="post-date">Updated regularly</span>
-        </div>
-        <h2 class="post-title">How to Choose the Right LLM for Your Project</h2>
-        <p class="post-excerpt">A practical framework for evaluating LLMs based on your specific needs: speed requirements, budget constraints, accuracy demands, and use case fit.</p>
-        <span class="post-read">Read more &rarr;</span>
-      </a>
+          <h2 class="post-title">How to Choose the Right LLM for Your Project</h2>
+          <p class="post-excerpt">A practical framework based on speed, cost, and capability requirements.</p>
+        </a>
 
-      <a href="/blog/llm-pricing-explained" class="post-card">
-        <div class="post-meta">
-          <span class="post-tag">Deep Dive</span>
-          <span class="post-date">Updated regularly</span>
-        </div>
-        <h2 class="post-title">LLM Pricing Explained: Understanding Token Costs</h2>
-        <p class="post-excerpt">Learn how LLM pricing works, what input vs output tokens mean, and how to estimate costs for your application. Includes tips for reducing API costs.</p>
-        <span class="post-read">Read more &rarr;</span>
-      </a>
+        <a href="/blog/llm-pricing-explained" class="post-card" data-article="llm-pricing-explained">
+          <span class="post-tag">Explainer</span>
+          <h2 class="post-title">LLM Pricing Explained: Understanding Token Costs</h2>
+          <p class="post-excerpt">How pricing works and strategies to reduce your API costs.</p>
+        </a>
 
-      <a href="/blog/llms-for-coding" class="post-card">
-        <div class="post-meta">
+        <a href="/blog/llms-for-coding" class="post-card" data-article="llms-for-coding">
           <span class="post-tag">Comparison</span>
-          <span class="post-date">Updated regularly</span>
-        </div>
-        <h2 class="post-title">LLMs for Coding: What Makes a Good Code Model</h2>
-        <p class="post-excerpt">Not all LLMs are created equal for code. Learn what factors matter most for code generation, debugging, and refactoring tasks.</p>
-        <span class="post-read">Read more &rarr;</span>
-      </a>
+          <h2 class="post-title">LLMs for Coding: What Makes a Good Code Model</h2>
+          <p class="post-excerpt">Key factors that differentiate code-focused models from general LLMs.</p>
+        </a>
 
-      <a href="/blog/speed-vs-cost" class="post-card">
-        <div class="post-meta">
+        <a href="/blog/speed-vs-cost" class="post-card" data-article="speed-vs-cost">
           <span class="post-tag">Strategy</span>
-          <span class="post-date">Updated regularly</span>
-        </div>
-        <h2 class="post-title">LLM Speed vs Cost: Finding the Right Balance</h2>
-        <p class="post-excerpt">Faster models often cost more. Learn how to balance throughput, latency, and price based on your application's real requirements.</p>
-        <span class="post-read">Read more &rarr;</span>
-      </a>
+          <h2 class="post-title">LLM Speed vs Cost: Finding the Right Balance</h2>
+          <p class="post-excerpt">When to optimize for throughput vs price based on your use case.</p>
+        </a>
 
-      <a href="/blog/free-ai-apis" class="post-card">
-        <div class="post-meta">
+        <a href="/blog/free-ai-apis" class="post-card" data-article="free-ai-apis">
           <span class="post-tag">Resource</span>
-          <span class="post-date">Updated regularly</span>
-        </div>
-        <h2 class="post-title">Free AI APIs: What's Available</h2>
-        <p class="post-excerpt">A comprehensive guide to free-tier AI APIs for LLMs and image generation. Perfect for prototyping, learning, or low-volume production use.</p>
-        <span class="post-read">Read more &rarr;</span>
-      </a>
+          <h2 class="post-title">Free AI APIs: What's Available</h2>
+          <p class="post-excerpt">Options for prototyping and low-volume production without API costs.</p>
+        </a>
 
-      <a href="/blog/understanding-latency-throughput" class="post-card">
-        <div class="post-meta">
+        <a href="/blog/understanding-latency-throughput" class="post-card" data-article="understanding-latency-throughput">
           <span class="post-tag">Technical</span>
-          <span class="post-date">Updated regularly</span>
-        </div>
-        <h2 class="post-title">Understanding LLM Latency and Throughput</h2>
-        <p class="post-excerpt">What do latency and throughput actually measure? How do they affect user experience? A technical guide to LLM performance metrics.</p>
-        <span class="post-read">Read more &rarr;</span>
-      </a>
+          <h2 class="post-title">Understanding LLM Latency and Throughput</h2>
+          <p class="post-excerpt">What these metrics mean and how they affect user experience.</p>
+        </a>
+      </div>
     </div>
+
+    <!-- Article: How to Choose LLM -->
+    <article class="article" id="how-to-choose-llm">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1>How to Choose the Right LLM for Your Project</h1>
+      <p class="article-meta">Guide</p>
+      <div class="article-content">
+        <p>Choosing an LLM isn't about finding the "best" model—it's about finding the best model <strong>for your specific use case</strong>. A chatbot needs different characteristics than a code completion tool or a document summarizer.</p>
+
+        <h2>Start With Your Constraints</h2>
+        <p>Before comparing models, define your requirements:</p>
+        <ul>
+          <li><strong>Latency tolerance:</strong> Real-time chat needs sub-200ms time-to-first-token. Batch processing can wait.</li>
+          <li><strong>Budget:</strong> A hobby project and an enterprise product have different cost sensitivities.</li>
+          <li><strong>Context needs:</strong> Processing long documents requires 100k+ context. Simple Q&A works with 8k.</li>
+          <li><strong>Accuracy requirements:</strong> Medical or legal applications need higher accuracy than creative writing.</li>
+        </ul>
+
+        <h2>The Decision Framework</h2>
+        <h3>For Real-Time Applications (Chat, Autocomplete)</h3>
+        <p>Prioritize <strong>latency and throughput</strong>. Users notice delays over 300ms. Look for models with sub-100ms latency and high tokens-per-second throughput. Smaller, faster models often beat larger ones for UX.</p>
+
+        <h3>For Batch Processing (Analysis, Summarization)</h3>
+        <p>Prioritize <strong>cost and accuracy</strong>. Latency doesn't matter when processing overnight. Optimize for the lowest cost-per-token that meets your quality bar.</p>
+
+        <h3>For Code Generation</h3>
+        <p>Prioritize <strong>code-specific training</strong>. Models trained on code repositories outperform general models. Look for models with "code" or "coder" in the name—they're optimized for programming tasks.</p>
+
+        <h3>For Vision Tasks</h3>
+        <p>Filter to <strong>multimodal models</strong>. Not all LLMs can process images. You need models that explicitly support image input.</p>
+
+        <div class="cta-box">
+          <p><strong>Compare models by your priorities</strong></p>
+          <p>Filter by speed, latency, price, and capabilities to find models that match your requirements.</p>
+          <a href="/" class="cta-btn">Browse Models</a>
+        </div>
+
+        <h2>Practical Tips</h2>
+        <ul>
+          <li><strong>Test with real data.</strong> Benchmarks don't tell the whole story. Run your actual prompts through candidate models.</li>
+          <li><strong>Consider provider reliability.</strong> Some providers have better uptime than others. Check if a model is available from multiple providers for redundancy.</li>
+          <li><strong>Start cheap, upgrade as needed.</strong> Begin with a budget model. Only upgrade if quality is genuinely insufficient—you might be surprised.</li>
+          <li><strong>Watch for context limits.</strong> A model's stated context length is the max. Actual useful context is often lower due to attention degradation.</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Article: LLM Pricing Explained -->
+    <article class="article" id="llm-pricing-explained">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1>LLM Pricing Explained: Understanding Token Costs</h1>
+      <p class="article-meta">Explainer</p>
+      <div class="article-content">
+        <p>LLM APIs charge by the token—but what does that actually mean for your costs? Here's how pricing works and how to estimate what you'll pay.</p>
+
+        <h2>What's a Token?</h2>
+        <p>A token is roughly 4 characters or 0.75 words in English. The sentence "Hello, how are you today?" is about 7 tokens. Code typically uses more tokens per line than prose because of syntax characters.</p>
+        <p><strong>Rule of thumb:</strong> 1,000 tokens ≈ 750 words ≈ 1-2 pages of text.</p>
+
+        <h2>Input vs Output Pricing</h2>
+        <p>Most models charge differently for input (your prompt) and output (the response):</p>
+        <ul>
+          <li><strong>Input tokens:</strong> What you send (system prompt, user message, context)</li>
+          <li><strong>Output tokens:</strong> What the model generates</li>
+        </ul>
+        <p>Output tokens are typically 2-5x more expensive than input tokens. This means long responses cost more than long prompts.</p>
+
+        <h2>Example Cost Calculation</h2>
+        <p>For a model priced at $1/M input, $3/M output:</p>
+        <ul>
+          <li>You send 500 tokens (input): $0.0005</li>
+          <li>Model responds with 200 tokens (output): $0.0006</li>
+          <li>Total cost per request: $0.0011</li>
+        </ul>
+        <p>At 10,000 requests per day, that's $11/day or ~$330/month.</p>
+
+        <h2>Cost Reduction Strategies</h2>
+        <h3>1. Shorten Your Prompts</h3>
+        <p>Every token in your system prompt is charged on every request. Trim unnecessary instructions. Be concise.</p>
+
+        <h3>2. Limit Output Length</h3>
+        <p>Set <code>max_tokens</code> to prevent runaway responses. If you need 100 words, don't allow 1,000.</p>
+
+        <h3>3. Use Cheaper Models for Simple Tasks</h3>
+        <p>Route simple queries to smaller, cheaper models. Save expensive models for complex reasoning.</p>
+
+        <h3>4. Cache Common Responses</h3>
+        <p>If users ask similar questions, cache responses instead of re-querying the API.</p>
+
+        <div class="cta-box">
+          <p><strong>Compare pricing across models</strong></p>
+          <p>Sort by input/output price to find the most cost-effective options for your use case.</p>
+          <a href="/?sort=price" class="cta-btn">View Pricing</a>
+        </div>
+
+        <h2>Hidden Costs to Watch</h2>
+        <ul>
+          <li><strong>System prompts multiply.</strong> A 500-token system prompt sent 10,000 times = 5M input tokens.</li>
+          <li><strong>Context accumulation.</strong> Chat apps that send full history get expensive fast. Consider summarization.</li>
+          <li><strong>Retries.</strong> Failed requests that you retry still cost money for the input tokens sent.</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Article: LLMs for Coding -->
+    <article class="article" id="llms-for-coding">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1>LLMs for Coding: What Makes a Good Code Model</h1>
+      <p class="article-meta">Comparison</p>
+      <div class="article-content">
+        <p>Not all LLMs are good at code. Models specifically trained on programming tasks consistently outperform general-purpose models for coding work.</p>
+
+        <h2>What Makes Code Models Different</h2>
+        <p>Code-focused models are trained on:</p>
+        <ul>
+          <li><strong>Large code repositories:</strong> GitHub, GitLab, open-source projects</li>
+          <li><strong>Programming documentation:</strong> API docs, tutorials, Stack Overflow</li>
+          <li><strong>Commit histories:</strong> Understanding how code changes over time</li>
+        </ul>
+        <p>This specialized training means they understand syntax, patterns, and conventions that general models miss.</p>
+
+        <h2>Key Factors for Code Models</h2>
+        <h3>Language Coverage</h3>
+        <p>Models trained on more languages handle edge cases better. Check if your primary language is well-represented in the training data.</p>
+
+        <h3>Context Length</h3>
+        <p>Coding often requires understanding large files or multiple files at once. Models with longer context windows can hold more code in memory.</p>
+
+        <h3>Speed for Autocomplete</h3>
+        <p>If you're building an IDE plugin or autocomplete feature, latency matters more than anything. A slower, smarter model creates a worse UX than a faster, slightly less accurate one.</p>
+
+        <h3>Instruction Following</h3>
+        <p>Good code models follow specific instructions: "refactor this function," "add error handling," "write tests for this class." They don't just complete—they transform.</p>
+
+        <div class="cta-box">
+          <p><strong>Find code-optimized models</strong></p>
+          <p>Use the coding filter to find models specifically trained for programming tasks.</p>
+          <a href="/" class="cta-btn">Browse Code Models</a>
+        </div>
+
+        <h2>Practical Recommendations</h2>
+        <ul>
+          <li><strong>For autocomplete:</strong> Prioritize speed. Sub-100ms latency with decent accuracy beats slow perfection.</li>
+          <li><strong>For code review:</strong> Prioritize accuracy. You can wait a second for better suggestions.</li>
+          <li><strong>For generation:</strong> Balance both. Users expect reasonable speed and good output.</li>
+        </ul>
+
+        <h2>Testing Code Models</h2>
+        <p>Don't rely on benchmarks alone. Test with your actual codebase:</p>
+        <ul>
+          <li>Can it understand your project's conventions?</li>
+          <li>Does it use your existing utilities or reinvent them?</li>
+          <li>Are suggestions syntactically correct in your language?</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Article: Speed vs Cost -->
+    <article class="article" id="speed-vs-cost">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1>LLM Speed vs Cost: Finding the Right Balance</h1>
+      <p class="article-meta">Strategy</p>
+      <div class="article-content">
+        <p>Faster models typically cost more. But "faster is better" isn't always true—the right choice depends on your application.</p>
+
+        <h2>When Speed Matters</h2>
+        <h3>Real-Time User Interfaces</h3>
+        <p>Chat interfaces, autocomplete, and interactive tools need fast responses. Users perceive delays over 300ms as sluggish. For these cases, invest in low-latency models.</p>
+
+        <h3>High-Volume Streaming</h3>
+        <p>When you're showing tokens as they generate, throughput (tokens per second) determines how fluid the experience feels. Aim for 50+ tokens/second for smooth streaming.</p>
+
+        <h3>Time-Sensitive Workflows</h3>
+        <p>If your pipeline has humans waiting—like AI-assisted customer support—delays compound. Fast models keep humans productive.</p>
+
+        <h2>When Cost Matters More</h2>
+        <h3>Batch Processing</h3>
+        <p>Processing 10,000 documents overnight? Nobody's watching. Use the cheapest model that meets quality requirements. A 10x cheaper model saves significant money at scale.</p>
+
+        <h3>Background Tasks</h3>
+        <p>Email categorization, content moderation, data extraction—if users don't see it happening, optimize for cost.</p>
+
+        <h3>Development and Testing</h3>
+        <p>You'll run thousands of test queries while building. Use cheap models for development, expensive ones for production.</p>
+
+        <div class="cta-box">
+          <p><strong>Sort by what matters to you</strong></p>
+          <p>Filter models by throughput for speed or by price for cost efficiency.</p>
+          <a href="/" class="cta-btn">Compare Models</a>
+        </div>
+
+        <h2>The Hybrid Approach</h2>
+        <p>Smart systems use multiple models:</p>
+        <ul>
+          <li><strong>Router pattern:</strong> Classify incoming requests, route simple ones to cheap models, complex ones to capable models.</li>
+          <li><strong>Cascade pattern:</strong> Try the cheap model first. If confidence is low, escalate to the expensive one.</li>
+          <li><strong>Task-specific:</strong> Different endpoints for different tasks, each using an appropriate model.</li>
+        </ul>
+        <p>These patterns can reduce costs 50-80% while maintaining quality where it matters.</p>
+      </div>
+    </article>
+
+    <!-- Article: Free AI APIs -->
+    <article class="article" id="free-ai-apis">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1>Free AI APIs: What's Available</h1>
+      <p class="article-meta">Resource</p>
+      <div class="article-content">
+        <p>You don't need a budget to start building with AI. Several options let you prototype and even run low-volume production without paying for API access.</p>
+
+        <h2>Types of Free Access</h2>
+        <h3>Free Tiers</h3>
+        <p>Most providers offer limited free usage—typically $5-20 worth of credits or a few thousand requests per month. Good for prototyping and learning.</p>
+
+        <h3>Open-Source Models</h3>
+        <p>Models like Llama, Mistral, and others are free to run yourself. You pay for compute (or use your own hardware) instead of per-token API costs.</p>
+
+        <h3>Rate-Limited Free APIs</h3>
+        <p>Some providers offer free access with rate limits. Fine for development, not for production traffic.</p>
+
+        <h2>What to Watch Out For</h2>
+        <ul>
+          <li><strong>Rate limits:</strong> Free tiers often limit requests per minute or day. Plan around this.</li>
+          <li><strong>Model restrictions:</strong> The best models usually aren't in free tiers. You get capable but not cutting-edge.</li>
+          <li><strong>No SLA:</strong> Free access means no uptime guarantees. Don't build production systems on free tiers.</li>
+          <li><strong>Data policies:</strong> Some free tiers use your data for training. Check the terms.</li>
+        </ul>
+
+        <div class="cta-box">
+          <p><strong>Filter for free models</strong></p>
+          <p>Use the "Free" toggle to find models with no per-token costs.</p>
+          <a href="/" class="cta-btn">Find Free Models</a>
+        </div>
+
+        <h2>Making Free Work for You</h2>
+        <ul>
+          <li><strong>Prototype fast:</strong> Validate your idea with free APIs before committing budget.</li>
+          <li><strong>Cache aggressively:</strong> Store responses for common queries to stay under limits.</li>
+          <li><strong>Use locally:</strong> For development, run smaller open-source models on your machine.</li>
+          <li><strong>Plan for paid:</strong> Build with the assumption you'll upgrade. Don't lock yourself into free-tier limitations.</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Article: Understanding Latency and Throughput -->
+    <article class="article" id="understanding-latency-throughput">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1>Understanding LLM Latency and Throughput</h1>
+      <p class="article-meta">Technical</p>
+      <div class="article-content">
+        <p>Latency and throughput are the two key performance metrics for LLMs—but they measure different things and matter in different situations.</p>
+
+        <h2>Latency: Time to First Token</h2>
+        <p><strong>What it measures:</strong> How long until the model starts responding.</p>
+        <p>Latency includes network time, queue time, and the model's processing time before generating the first token. It's measured in milliseconds.</p>
+        <ul>
+          <li><strong>Sub-100ms:</strong> Feels instant. Ideal for autocomplete.</li>
+          <li><strong>100-300ms:</strong> Responsive. Good for chat.</li>
+          <li><strong>300-500ms:</strong> Noticeable delay. Acceptable for complex queries.</li>
+          <li><strong>500ms+:</strong> Feels slow. Only acceptable for batch processing.</li>
+        </ul>
+
+        <h2>Throughput: Tokens Per Second</h2>
+        <p><strong>What it measures:</strong> How fast the model generates output once it starts.</p>
+        <p>Throughput determines how quickly a response completes. For streaming responses, it's how fast text appears.</p>
+        <ul>
+          <li><strong>100+ t/s:</strong> Faster than reading speed. Feels instant.</li>
+          <li><strong>50-100 t/s:</strong> Comfortable reading pace.</li>
+          <li><strong>20-50 t/s:</strong> Noticeably slow streaming.</li>
+          <li><strong>Under 20 t/s:</strong> Painfully slow for streaming.</li>
+        </ul>
+
+        <h2>Which Matters When</h2>
+        <h3>Latency-Critical Use Cases</h3>
+        <ul>
+          <li>Autocomplete (IDE, search)</li>
+          <li>Real-time chat</li>
+          <li>Voice assistants</li>
+        </ul>
+
+        <h3>Throughput-Critical Use Cases</h3>
+        <ul>
+          <li>Streaming long responses</li>
+          <li>Batch processing (total time = tokens / throughput)</li>
+          <li>Document generation</li>
+        </ul>
+
+        <div class="cta-box">
+          <p><strong>Compare real-time performance</strong></p>
+          <p>See live latency and throughput metrics across all models.</p>
+          <a href="/" class="cta-btn">View Benchmarks</a>
+        </div>
+
+        <h2>Why Metrics Vary</h2>
+        <p>The same model can show different numbers because of:</p>
+        <ul>
+          <li><strong>Provider infrastructure:</strong> Different providers run the same model on different hardware.</li>
+          <li><strong>Load:</strong> Busy servers mean higher latency and lower throughput.</li>
+          <li><strong>Request size:</strong> Longer prompts take longer to process.</li>
+          <li><strong>Time of day:</strong> Peak hours see more congestion.</li>
+        </ul>
+        <p>This is why we show metrics by provider—the same model performs differently depending on where it's hosted.</p>
+      </div>
+    </article>
   </div>
+
+  <script>
+    const articles = {
+      'how-to-choose-llm': {
+        title: 'How to Choose the Right LLM for Your Project - modelgrep',
+        desc: 'A practical framework for evaluating LLMs based on speed, cost, and capability requirements.'
+      },
+      'llm-pricing-explained': {
+        title: 'LLM Pricing Explained: Understanding Token Costs - modelgrep',
+        desc: 'Learn how LLM pricing works and strategies to reduce your API costs.'
+      },
+      'llms-for-coding': {
+        title: 'LLMs for Coding: What Makes a Good Code Model - modelgrep',
+        desc: 'Key factors that differentiate code-focused models from general LLMs.'
+      },
+      'speed-vs-cost': {
+        title: 'LLM Speed vs Cost: Finding the Right Balance - modelgrep',
+        desc: 'When to optimize for throughput vs price based on your use case.'
+      },
+      'free-ai-apis': {
+        title: 'Free AI APIs: What\'s Available - modelgrep',
+        desc: 'Options for prototyping and low-volume production without API costs.'
+      },
+      'understanding-latency-throughput': {
+        title: 'Understanding LLM Latency and Throughput - modelgrep',
+        desc: 'What these metrics mean and how they affect user experience.'
+      }
+    };
+
+    function showArticle(slug) {
+      document.getElementById('blog-index').style.display = 'none';
+      document.querySelectorAll('.article').forEach(a => a.classList.remove('active'));
+
+      const article = document.getElementById(slug);
+      if (article) {
+        article.classList.add('active');
+        const meta = articles[slug];
+        if (meta) {
+          document.getElementById('page-title').textContent = meta.title;
+          document.getElementById('page-desc').content = meta.desc;
+          document.getElementById('canonical').href = 'https://modelgrep.com/blog/' + slug;
+        }
+      }
+    }
+
+    function showIndex() {
+      document.getElementById('blog-index').style.display = 'block';
+      document.querySelectorAll('.article').forEach(a => a.classList.remove('active'));
+      document.getElementById('page-title').textContent = 'Blog - modelgrep';
+      document.getElementById('page-desc').content = 'Guides and insights on choosing, comparing, and using AI models.';
+      document.getElementById('canonical').href = 'https://modelgrep.com/blog';
+    }
+
+    function handleRoute() {
+      const path = window.location.pathname;
+      if (path === '/blog' || path === '/blog/') {
+        showIndex();
+      } else if (path.startsWith('/blog/')) {
+        const slug = path.replace('/blog/', '').replace('/', '');
+        if (articles[slug]) {
+          showArticle(slug);
+        } else {
+          showIndex();
+        }
+      }
+    }
+
+    // Handle link clicks
+    document.querySelectorAll('.post-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const slug = card.dataset.article;
+        history.pushState({}, '', '/blog/' + slug);
+        showArticle(slug);
+        window.scrollTo(0, 0);
+      });
+    });
+
+    document.querySelectorAll('.back-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        history.pushState({}, '', '/blog');
+        showIndex();
+        window.scrollTo(0, 0);
+      });
+    });
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', handleRoute);
+
+    // Initial route
+    handleRoute();
+  </script>
 </body>
 </html>
