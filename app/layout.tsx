@@ -35,13 +35,11 @@ export const metadata: Metadata = {
     title: "modelgrep — Find & Understand Every LLM",
     description:
       "Compare 300+ LLMs by intelligence, speed, price, and capabilities. The default place to find and understand AI models.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "modelgrep — Find & Understand Every LLM",
     description: "Compare 300+ LLMs by intelligence, speed, price, and capabilities.",
-    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   manifest: "/site.webmanifest",

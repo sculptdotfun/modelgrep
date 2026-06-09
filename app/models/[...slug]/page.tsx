@@ -52,13 +52,30 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
   const title = `${m.name} — Benchmarks, Speed & Pricing`;
   const description = `${m.name}: ${summary || "specs, benchmarks and pricing"}. Compare intelligence, coding & design benchmarks, latency, context window, capabilities and per-provider pricing on modelgrep.`;
+  const owner = modelOwner(m.id);
 
   return {
     title,
     description,
+    keywords: [
+      m.name,
+      `${m.name} pricing`,
+      `${m.name} benchmark`,
+      `${m.name} api`,
+      `${m.name} context window`,
+      `${m.name} vs`,
+      `${owner} models`,
+      "LLM comparison",
+    ],
     alternates: { canonical: `/models/${id}` },
-    openGraph: { title, description, url: `/models/${id}`, type: "article" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: {
+      title,
+      description,
+      url: `/models/${id}`,
+      type: "article",
+      images: [{ url: `/og?id=${encodeURIComponent(id)}`, width: 1200, height: 630 }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [`/og?id=${encodeURIComponent(id)}`] },
   };
 }
 
@@ -169,17 +186,67 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
           .slice(0, 6)
       : catalog.filter((x) => x.id !== m.id && modelOwner(x.id) === modelOwner(m.id)).slice(0, 6);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: m.name,
-    applicationCategory: "Large Language Model",
-    operatingSystem: "API",
-    offers: { "@type": "Offer", price: m.price_input ?? 0, priceCurrency: "USD", description: "Price per 1M input tokens" },
-    ...(aa?.intelligence != null && {
-      aggregateRating: { "@type": "AggregateRating", ratingValue: aa.intelligence, bestRating: 100, ratingCount: 1 },
-    }),
-  };
+  const url = `https://modelgrep.com/models/${m.id}`;
+  const owner = modelOwner(m.id);
+
+  // FAQ derived from the model's data — adds indexable long-tail content and
+  // FAQ rich-result eligibility.
+  const faqs: { q: string; a: string }[] = [];
+  if (m.price_input != null) {
+    faqs.push({
+      q: `How much does ${m.name} cost?`,
+      a: `${m.name} costs ${m.price_input === 0 ? "nothing (free tier)" : `${fmtPrice(m.price_input)} per million input tokens`}${m.price_output != null && m.price_input > 0 ? ` and ${fmtPrice(m.price_output)} per million output tokens` : ""} via OpenRouter${priceRank ? `, making it ${ordinal(priceRank.rank)} cheapest of ${priceRank.total} paid models` : ""}.`,
+    });
+  }
+  if (aa?.intelligence != null) {
+    faqs.push({
+      q: `How smart is ${m.name}?`,
+      a: `${m.name} scores ${aa.intelligence.toFixed(1)} on the Artificial Analysis Intelligence Index${intelRank ? `, ranking ${ordinal(intelRank.rank)} of ${intelRank.total} benchmarked models` : ""}${aa.gpqa != null ? `, with a GPQA Diamond score of ${pct(aa.gpqa, 0)}` : ""}.`,
+    });
+  }
+  if (m.throughput || m.latency != null) {
+    faqs.push({
+      q: `How fast is ${m.name}?`,
+      a: `${m.name} generates around ${m.throughput ? `${fmtThroughput(m.throughput)} tokens per second` : "—"}${m.latency != null ? ` with ${fmtLatency(m.latency)} time-to-first-token (p50)` : ""}${speedRank ? `, the ${ordinal(speedRank.rank)} fastest tracked model` : ""}.`,
+    });
+  }
+  faqs.push({
+    q: `What is ${m.name}'s context window?`,
+    a: `${m.name} supports a ${fmtContext(m.context_length)}-token context window${m.max_output ? ` and can output up to ${fmtContext(m.max_output)} tokens` : ""}. It accepts ${m.input_modalities.join(", ")} input.`,
+  });
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: m.name,
+      url,
+      applicationCategory: "Large Language Model",
+      operatingSystem: "API",
+      author: { "@type": "Organization", name: owner },
+      offers: { "@type": "Offer", price: m.price_input ?? 0, priceCurrency: "USD", description: "Price per 1M input tokens" },
+      ...(aa?.intelligence != null && {
+        aggregateRating: { "@type": "AggregateRating", ratingValue: aa.intelligence, bestRating: 100, worstRating: 0, ratingCount: 1 },
+      }),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Models", item: "https://modelgrep.com/" },
+        { "@type": "ListItem", position: 2, name: m.name, item: url },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ];
 
   const aaEvals: { label: string; value: number | null; frac?: boolean; scale?: number }[] = [
     { label: "Intelligence Index", value: aa?.intelligence ?? null, scale: 65 },
@@ -381,6 +448,19 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
             )}
           </div>
         </Section>
+
+        {faqs.length > 0 && (
+          <Section title={`${m.name} FAQ`}>
+            <div className="card-shadow divide-y divide-line rounded-xl border border-line bg-surface">
+              {faqs.map((f) => (
+                <div key={f.q} className="px-4 py-3.5">
+                  <h3 className="text-[15px] font-semibold text-ink">{f.q}</h3>
+                  <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-ink-2">{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
 
         {similar.length > 0 && (
           <Section title={baseIntel != null ? "Similar models" : `More from ${modelOwner(m.id)}`}>

@@ -20,8 +20,27 @@ export default async function Home() {
   const benchmarked = models.filter((m) => m.aa || m.da).length;
   const stats = { models: models.length, providers: providerCount, benchmarked };
 
+  const top = models
+    .filter((m) => m.aa?.intelligence != null)
+    .sort((a, b) => b.aa!.intelligence! - a.aa!.intelligence!)
+    .slice(0, 15);
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "LLM leaderboard ranked by intelligence",
+    description: "AI models ranked by the Artificial Analysis Intelligence Index.",
+    numberOfItems: top.length,
+    itemListElement: top.map((m, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: m.name,
+      url: `https://modelgrep.com/models/${m.id}`,
+    })),
+  };
+
   return (
     <div className="min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <section className="dot-texture border-b border-line">
         <div className="mx-auto w-full max-w-[1320px] px-5 pb-9 pt-7">
           <span className="font-mono text-[15px] font-bold tracking-tight text-ink">
