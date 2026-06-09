@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { COLLECTIONS } from "@/lib/collections";
 import { BLOG_POSTS } from "@/lib/blog";
+import { Mark } from "./SiteHeader";
 
 export function Footer() {
   return (
@@ -8,8 +9,11 @@ export function Footer() {
       <div className="mx-auto w-full max-w-[1200px] px-5 py-9">
         <div className="flex flex-col gap-6 sm:flex-row sm:justify-between">
           <div className="max-w-xs">
-            <Link href="/" className="font-mono text-[15px] font-bold tracking-tight text-ink">
-              model<span className="text-brand">grep</span>
+            <Link href="/" className="flex items-center gap-2 font-mono text-[15px] font-bold tracking-tight text-ink">
+              <Mark size={16} />
+              <span>
+                model<span className="text-brand">grep</span>
+              </span>
             </Link>
             <p className="mt-2 text-[13px] text-ink-2">The leaderboard to find &amp; understand every LLM — ranked by benchmarks, speed and price.</p>
           </div>

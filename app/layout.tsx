@@ -5,6 +5,10 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], display: "swap" });
 
+export const viewport = {
+  themeColor: "#fafafa",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://modelgrep.com"),
   title: {
@@ -43,7 +47,7 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   manifest: "/site.webmanifest",
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/favicon.svg", apple: "/apple-icon" },
 };
 
 const websiteJsonLd = {
