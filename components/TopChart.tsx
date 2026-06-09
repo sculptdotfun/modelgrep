@@ -56,17 +56,17 @@ export function TopChart({ models }: { models: LiteModel[] }) {
   const floor = metric === "elo" ? 800 : 0;
 
   return (
-    <div className="card-shadow rounded-2xl border border-line bg-surface p-4">
+    <div className="rounded-lg border border-line bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-display text-[14px] font-bold text-ink">Top models</h2>
-        <div className="flex gap-0.5 rounded-lg bg-surface-2 p-0.5">
+        <h2 className="font-mono text-[11px] font-semibold uppercase tracking-widest text-ink-2">Top models</h2>
+        <div className="flex overflow-hidden rounded-md border border-line">
           {METRICS.map((mt) => (
             <button
               key={mt.key}
               onClick={() => setMetric(mt.key)}
               className={clsx(
-                "rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors",
-                metric === mt.key ? "bg-surface text-ink shadow-sm" : "text-ink-3 hover:text-ink-2",
+                "px-2.5 py-1 text-[11px] font-medium transition-colors",
+                metric === mt.key ? "bg-ink text-white" : "text-ink-3 hover:bg-surface-2 hover:text-ink",
               )}
             >
               {mt.label}
@@ -84,17 +84,17 @@ export function TopChart({ models }: { models: LiteModel[] }) {
             <button
               key={m.id}
               onClick={() => router.push(`/models/${m.id}`)}
-              className="group flex items-center gap-2.5 rounded-lg px-1.5 py-[7px] text-left transition-colors hover:bg-surface-2/70"
+              className="group flex items-center gap-2.5 rounded-md px-1.5 py-[7px] text-left transition-colors hover:bg-surface-2/70"
             >
               <span className="w-4 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink-3">{i + 1}</span>
-              <span className="size-2 shrink-0 rounded-full" style={{ background: oc }} />
+              <span className="size-2 shrink-0 rounded-[2px]" style={{ background: oc }} />
               <span className="w-28 shrink-0 truncate font-mono text-[12px] text-ink group-hover:text-brand-ink" title={m.id}>
                 {name}
               </span>
-              <span className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+              <span className="relative h-2 flex-1 overflow-hidden rounded-[1px] bg-surface-2">
                 <span
                   key={metric}
-                  className="animate-grow absolute inset-y-0 left-0 rounded-full"
+                  className="animate-grow absolute inset-y-0 left-0 rounded-[1px]"
                   style={{ width: `${Math.max(3, w)}%`, background: oc, opacity: 0.85 }}
                 />
               </span>

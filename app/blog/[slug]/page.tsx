@@ -56,7 +56,7 @@ export default async function BlogPost({ params }: { params: Promise<Params> }) 
           <span className="text-ink-2">{post.slug}</span>
         </nav>
 
-        <span className="mt-5 inline-block rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-ink">
+        <span className="mt-5 inline-block font-mono text-[10px] font-semibold uppercase tracking-widest text-ink-3">
           {post.tag}
         </span>
         <h1 className="font-display mt-3 text-[30px] font-bold leading-tight text-ink sm:text-[34px]">{post.title}</h1>
@@ -71,7 +71,7 @@ export default async function BlogPost({ params }: { params: Promise<Params> }) 
               <Link
                 key={p.slug}
                 href={`/blog/${p.slug}`}
-                className="card-shadow card-lift rounded-xl border border-line bg-surface p-3.5 text-[13px] font-medium leading-snug text-ink hover:text-brand-ink"
+                className="card-shadow card-lift rounded-lg border border-line bg-surface p-3.5 text-[13px] font-medium leading-snug text-ink hover:text-brand-ink"
               >
                 {p.title}
               </Link>

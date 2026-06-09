@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
-/* modelgrep — light, high-contrast utility theme driven by semantic tokens. */
+/* modelgrep — sharp utility theme: flat surfaces, hairline borders, tight
+   type, one restrained accent. Decoration carries information or is removed. */
 @theme {
-  --color-canvas: #f7f8fa;
+  --color-canvas: #fafafa;
   --color-surface: #ffffff;
-  --color-surface-2: #f2f3f6;
-  --color-line: #ebecf0;
-  --color-line-strong: #dcdee4;
-  --color-ink: #15151c;
-  --color-ink-2: #50525e;
-  --color-ink-3: #8b8d99;
+  --color-surface-2: #f4f4f5;
+  --color-line: #e7e7ea;
+  --color-line-strong: #d4d4d8;
+  --color-ink: #101014;
+  --color-ink-2: #51525c;
+  --color-ink-3: #8e8f98;
   --color-brand: #5b3df5;
   --color-brand-ink: #4a2fe0;
 
-  /* metric tiers tuned for a white background */
-  --color-elite: #059669;
-  --color-high: #2563eb;
-  --color-mid: #d97706;
-  --color-low: #e11d48;
+  /* metric tiers tuned for white backgrounds */
+  --color-elite: #047857;
+  --color-high: #1d4ed8;
+  --color-mid: #b45309;
+  --color-low: #be123c;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, "JetBrains Mono", monospace;
-  --font-display: var(--font-display), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 :root {
@@ -41,7 +41,8 @@ body {
 }
 
 ::selection {
-  background: rgba(91, 61, 245, 0.16);
+  background: rgba(16, 16, 20, 0.9);
+  color: #fff;
 }
 
 ::-webkit-scrollbar {
@@ -52,66 +53,45 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d3d5dc;
-  border-radius: 6px;
+  background: #d4d4d8;
+  border-radius: 5px;
   border: 2px solid var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b9bcc6;
+  background: #b6b7bd;
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: #d3d5dc transparent;
+  scrollbar-color: #d4d4d8 transparent;
 }
 
 .font-mono {
   font-family: var(--font-mono), ui-monospace, "JetBrains Mono", monospace;
 }
 
+/* Display type is just the sans, set tight — sharp, no novelty face. */
 .font-display {
-  font-family: var(--font-display), var(--font-inter), ui-sans-serif, sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.035em;
 }
 
-/* Soft elevation for cards. */
+/* Flat system: borders define surfaces; shadows are off. */
 .card-shadow {
-  box-shadow:
-    0 1px 2px rgba(16, 18, 28, 0.03),
-    0 4px 12px -4px rgba(16, 18, 28, 0.06);
+  box-shadow: none;
 }
 
-/* Slightly stronger elevation on hover — for interactive cards. */
+/* Interactive cards sharpen their border instead of lifting. */
 .card-lift {
-  transition:
-    box-shadow 0.18s ease,
-    transform 0.18s ease,
-    border-color 0.18s ease;
+  transition: border-color 0.12s ease;
 }
 .card-lift:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 2px 4px rgba(16, 18, 28, 0.04),
-    0 10px 24px -8px rgba(16, 18, 28, 0.1);
-}
-
-/* Faint dotted texture for hero bands. */
-.dot-texture {
-  background-image: radial-gradient(rgba(91, 61, 245, 0.06) 1px, transparent 1px);
-  background-size: 22px 22px;
-}
-
-/* Brand gradient for display-type accents. */
-.text-gradient {
-  background: linear-gradient(92deg, #5b3df5 0%, #9333ea 60%, #d946ef 110%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  border-color: var(--color-line-strong);
 }
 
 :focus-visible {
-  outline: 2px solid rgba(91, 61, 245, 0.55);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+  border-radius: 2px;
 }
 
 /* Article typography for migrated blog content (raw HTML bodies). */
@@ -121,16 +101,15 @@ body {
   line-height: 1.75;
 }
 .prose-mg h2 {
-  font-family: var(--font-display), var(--font-inter), sans-serif;
   color: var(--color-ink);
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   margin: 2em 0 0.6em;
 }
 .prose-mg h3 {
   color: var(--color-ink);
-  font-size: 17px;
+  font-size: 16.5px;
   font-weight: 650;
   margin: 1.5em 0 0.5em;
 }
@@ -156,9 +135,13 @@ body {
   margin: 0.45em 0;
 }
 .prose-mg a {
-  color: var(--color-brand-ink);
+  color: var(--color-ink);
   text-decoration: underline;
   text-underline-offset: 2px;
+  text-decoration-color: var(--color-line-strong);
+}
+.prose-mg a:hover {
+  text-decoration-color: var(--color-ink);
 }
 .prose-mg table {
   width: 100%;
@@ -181,18 +164,15 @@ body {
   font-family: var(--font-mono), monospace;
   font-size: 0.9em;
   background: var(--color-surface-2);
-  border-radius: 4px;
+  border-radius: 3px;
   padding: 1px 5px;
 }
 .prose-mg .cta-box {
-  background: var(--color-surface);
+  background: var(--color-surface-2);
   border: 1px solid var(--color-line);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 18px 20px;
   margin: 1.6em 0;
-  box-shadow:
-    0 1px 2px rgba(16, 18, 28, 0.03),
-    0 4px 12px -4px rgba(16, 18, 28, 0.06);
 }
 .prose-mg .cta-box p {
   margin: 0 0 10px;
@@ -203,26 +183,12 @@ body {
   color: #fff;
   font-size: 13.5px;
   font-weight: 550;
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 8px 14px;
   text-decoration: none;
 }
 .prose-mg .cta-btn:hover {
-  opacity: 0.9;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fade-up {
-  animation: fadeUp 0.18s ease-out;
+  opacity: 0.88;
 }
 
 @keyframes growBar {
@@ -235,5 +201,5 @@ body {
 }
 .animate-grow {
   transform-origin: left center;
-  animation: growBar 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: growBar 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }

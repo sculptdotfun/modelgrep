@@ -12,7 +12,7 @@ const CAP_LABEL: Record<CapKey, string> = {
 
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-line bg-surface px-2.5 py-1 text-[12px] text-ink-2">
+    <span className="inline-flex items-center gap-1 rounded-md border border-line bg-surface px-2.5 py-1 text-[12px] text-ink-2">
       {label}
       <button onClick={onRemove} className="-mr-0.5 ml-0.5 text-ink-3 hover:text-low" aria-label={`Remove ${label}`}>
         ✕

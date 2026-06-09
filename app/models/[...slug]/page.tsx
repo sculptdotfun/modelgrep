@@ -116,9 +116,9 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
 // KPI card with tier-colored value + contextual rank/percentile sub.
 function Kpi({ label, value, tier, sub }: { label: string; value: string; tier?: Tier; sub?: string }) {
   return (
-    <div className="card-shadow rounded-xl border border-line bg-surface p-3.5">
+    <div className="card-shadow rounded-lg border border-line bg-surface p-3.5">
       <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-3">{label}</div>
-      <div className={clsx("font-display mt-1 text-[24px] font-bold leading-none", tier ? tierColor[tier] : "text-ink")}>{value}</div>
+      <div className={clsx("font-mono mt-1.5 text-[22px] font-bold leading-none tracking-tight", tier ? tierColor[tier] : "text-ink")}>{value}</div>
       {sub && <div className="mt-1.5 text-[11px] text-ink-3">{sub}</div>}
     </div>
   );
@@ -134,8 +134,8 @@ function CompareBar({ label, pct, tier }: { label: string; pct: number; tier: Ti
         <span className="text-sm text-ink-2">{label}</span>
         <span className={clsx("font-mono text-sm font-bold tabular-nums", tierColor[tier])}>{pct}%</span>
       </div>
-      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-2">
-        <div className={clsx("h-full rounded-full", BAR_FILL[tier])} style={{ width: `${Math.max(2, pct)}%` }} />
+      <div className="mt-1.5 h-[6px] overflow-hidden rounded-[1px] bg-surface-2">
+        <div className={clsx("h-full rounded-[1px]", BAR_FILL[tier])} style={{ width: `${Math.max(2, pct)}%` }} />
       </div>
       <div className="mt-1 text-[11px] text-ink-3">of all ranked models</div>
     </div>
@@ -147,8 +147,8 @@ function BenchBar({ label, value, frac, tier, display }: { label: string; value:
   return (
     <div className="flex items-center gap-3 border-b border-line py-2.5 last:border-0">
       <span className="w-40 shrink-0 text-sm text-ink-2">{label}</span>
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-        <div className={clsx("h-full rounded-full", BAR_FILL[tier])} style={{ width: `${Math.max(2, Math.min(100, frac * 100))}%` }} />
+      <div className="h-[5px] flex-1 overflow-hidden rounded-[1px] bg-surface-2">
+        <div className={clsx("h-full rounded-[1px]", BAR_FILL[tier])} style={{ width: `${Math.max(2, Math.min(100, frac * 100))}%` }} />
       </div>
       <span className={clsx("w-12 text-right font-mono text-[13px] font-semibold tabular-nums", tierColor[tier])}>{display}</span>
     </div>
@@ -285,12 +285,12 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
               <p className="mt-1 font-mono text-[13px] text-ink-3">{m.id}</p>
               <div className="mt-3 flex flex-wrap items-center gap-1.5">
                 {intelRank && (
-                  <span className="rounded-md bg-emerald-50 px-2 py-1 text-[11px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                  <span className="rounded-md bg-ink px-2 py-1 text-[11px] font-semibold text-white">
                     {ordinal(intelRank.rank)} smartest of {intelRank.total}
                   </span>
                 )}
                 {priceRank && priceRank.rank <= Math.ceil(priceRank.total * 0.25) && (
-                  <span className="rounded-md bg-violet-50 px-2 py-1 text-[11px] font-medium text-violet-700 ring-1 ring-inset ring-violet-200">
+                  <span className="rounded-md border border-line px-2 py-1 text-[11px] font-medium text-ink-2">
                     Cheaper than {Math.round((1 - priceRank.rank / priceRank.total) * 100)}% of paid
                   </span>
                 )}
@@ -304,7 +304,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
             href={`https://openrouter.ai/${m.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 rounded-lg bg-ink px-3.5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            className="shrink-0 rounded-md bg-ink px-3.5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             Use via OpenRouter ↗
           </a>
@@ -331,7 +331,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
 
         {(intelPctl != null || speedPctl != null || cheaperPctl != null) && (
           <Section title="How it compares">
-            <div className="card-shadow grid gap-x-8 gap-y-3.5 rounded-xl border border-line bg-surface p-4 sm:grid-cols-3">
+            <div className="card-shadow grid gap-x-8 gap-y-3.5 rounded-lg border border-line bg-surface p-4 sm:grid-cols-3">
               {intelPctl != null && <CompareBar label="Smarter than" pct={intelPctl} tier="elite" />}
               {speedPctl != null && <CompareBar label="Faster than" pct={speedPctl} tier="high" />}
               {cheaperPctl != null && <CompareBar label="Cheaper than" pct={cheaperPctl} tier="mid" />}
@@ -349,7 +349,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
           <Section title="Benchmarks" aside={<span className="text-[11px] text-ink-3">independent · via OpenRouter</span>}>
             <div className="grid gap-4 lg:grid-cols-2">
               {aa && (
-                <div className="card-shadow rounded-xl border border-line bg-surface p-4">
+                <div className="card-shadow rounded-lg border border-line bg-surface p-4">
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-sm font-semibold text-ink">Artificial Analysis</span>
                     {aa.intelligence_pct != null && <span className="text-xs text-ink-3">{aa.intelligence_pct}th percentile</span>}
@@ -365,7 +365,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
                 </div>
               )}
               {da && (
-                <div className="card-shadow rounded-xl border border-line bg-surface p-4">
+                <div className="card-shadow rounded-lg border border-line bg-surface p-4">
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-sm font-semibold text-ink">Design Arena · Elo</span>
                     {da.tournaments != null && <span className="text-xs text-ink-3">{da.tournaments.toLocaleString()} tournaments</span>}
@@ -390,7 +390,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
 
         {m.provider_details.length > 0 && (
           <Section title={`Providers & pricing (${m.provider_details.length})`}>
-            <div className="card-shadow overflow-hidden rounded-xl border border-line bg-surface">
+            <div className="card-shadow overflow-hidden rounded-lg border border-line bg-surface">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-line text-[10px] uppercase tracking-wider text-ink-3">
@@ -428,7 +428,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
         )}
 
         <Section title="Specifications">
-          <div className="card-shadow grid gap-x-10 rounded-xl border border-line bg-surface px-4 py-1 sm:grid-cols-2">
+          <div className="card-shadow grid gap-x-10 rounded-lg border border-line bg-surface px-4 py-1 sm:grid-cols-2">
             <Field label="Context window" value={fmtContext(m.context_length)} />
             <Field label="Max output" value={m.max_output ? fmtContext(m.max_output) : "—"} />
             <Field label="Knowledge cutoff" value={fmtCutoff(m.knowledge_cutoff)} />
@@ -452,7 +452,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
 
         {faqs.length > 0 && (
           <Section title={`${shortName} FAQ`}>
-            <div className="card-shadow divide-y divide-line rounded-xl border border-line bg-surface">
+            <div className="card-shadow divide-y divide-line rounded-lg border border-line bg-surface">
               {faqs.map((f) => (
                 <div key={f.q} className="px-4 py-3.5">
                   <h3 className="text-[15px] font-semibold text-ink">{f.q}</h3>
@@ -472,10 +472,10 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
                   <Link
                     key={s.id}
                     href={`/models/${s.id}`}
-                    className="card-shadow card-lift group rounded-xl border border-line bg-surface p-3.5"
+                    className="card-shadow card-lift group rounded-lg border border-line bg-surface p-3.5"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="size-2 shrink-0 rounded-full" style={{ background: soc }} />
+                      <span className="size-2 shrink-0 rounded-[2px]" style={{ background: soc }} />
                       <span className="truncate font-mono text-[13px] font-medium text-ink group-hover:text-brand-ink">{s.id}</span>
                     </div>
                     <div className="mt-2.5 flex items-center justify-between text-xs">
@@ -501,7 +501,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
                 <Link
                   key={s.id}
                   href={`/compare/${[m.id, s.id].sort().join("/vs/")}`}
-                  className="rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-2 hover:text-brand-ink"
+                  className="rounded-md border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-2 hover:text-brand-ink"
                 >
                   {m.name} vs {s.name}
                 </Link>

@@ -133,7 +133,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
 
         <p className="mx-auto mt-6 max-w-xl text-center text-[15px] leading-relaxed text-ink-2">{verdict}</p>
 
-        <div className="card-shadow mt-7 overflow-hidden rounded-xl border border-line bg-surface">
+        <div className="card-shadow mt-7 overflow-hidden rounded-lg border border-line bg-surface">
           <table className="w-full">
             <thead>
               <tr className="text-[10px] uppercase tracking-wider text-ink-3">
@@ -164,10 +164,10 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
         </div>
 
         <div className="mt-5 flex justify-center gap-3 text-sm">
-          <Link href={`/models/${a.id}`} className="rounded-lg border border-line bg-surface px-3.5 py-2 font-medium text-ink-2 hover:text-ink">
+          <Link href={`/models/${a.id}`} className="rounded-md border border-line bg-surface px-3.5 py-2 font-medium text-ink-2 hover:text-ink">
             {a.name} details →
           </Link>
-          <Link href={`/models/${b.id}`} className="rounded-lg border border-line bg-surface px-3.5 py-2 font-medium text-ink-2 hover:text-ink">
+          <Link href={`/models/${b.id}`} className="rounded-md border border-line bg-surface px-3.5 py-2 font-medium text-ink-2 hover:text-ink">
             {b.name} details →
           </Link>
         </div>

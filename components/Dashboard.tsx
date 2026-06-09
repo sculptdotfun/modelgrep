@@ -31,7 +31,7 @@ function SearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search models — name, id, provider…"
-        className="card-shadow h-10 w-full rounded-lg border border-line bg-surface pl-10 pr-12 text-sm text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
+        className="h-10 w-full rounded-md border border-line bg-surface pl-10 pr-12 text-sm text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-ink"
       />
       <kbd className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-ink-3">
         /
@@ -56,7 +56,7 @@ export function Dashboard({
       <div className="mb-4 flex items-center gap-2">
         <button
           onClick={() => setMenuOpen(true)}
-          className="flex size-10 items-center justify-center rounded-lg border border-line bg-surface text-ink-2 lg:hidden"
+          className="flex size-10 items-center justify-center rounded-md border border-line bg-surface text-ink-2 lg:hidden"
           aria-label="Filters"
         >
           <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2">

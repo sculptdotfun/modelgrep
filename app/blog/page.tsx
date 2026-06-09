@@ -32,9 +32,9 @@ export default function BlogIndex() {
             <Link
               key={p.slug}
               href={`/blog/${p.slug}`}
-              className="card-shadow card-lift group flex flex-col rounded-2xl border border-line bg-surface p-5"
+              className="card-shadow card-lift group flex flex-col rounded-lg border border-line bg-surface p-5"
             >
-              <span className="self-start rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-ink">
+              <span className="self-start font-mono text-[10px] font-semibold uppercase tracking-widest text-ink-3">
                 {p.tag}
               </span>
               <h2 className="font-display mt-3 text-[17px] font-bold leading-snug text-ink group-hover:text-brand-ink">

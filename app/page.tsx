@@ -9,11 +9,11 @@ import { COLLECTIONS } from "@/lib/collections";
 
 export const revalidate = 3600;
 
-function StatPill({ value, label }: { value: string | number; label: string }) {
+function StatPill({ value, label, first }: { value: string | number; label: string; first?: boolean }) {
   return (
-    <div className="flex items-baseline gap-1.5">
-      <span className="font-display text-xl font-bold text-ink">{value}</span>
-      <span className="text-[13px] text-ink-3">{label}</span>
+    <div className={`flex flex-col py-3 pr-8 ${first ? "" : "pl-8"}`}>
+      <span className="font-mono text-[22px] font-bold leading-none tracking-tight text-ink">{value}</span>
+      <span className="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-3">{label}</span>
     </div>
   );
 }
@@ -45,27 +45,27 @@ export default async function Home() {
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
-      <section className="dot-texture border-b border-line">
-        <div className="mx-auto w-full max-w-[1320px] px-5 pb-9 pt-6">
+      <section className="border-b border-line bg-surface">
+        <div className="mx-auto w-full max-w-[1320px] px-5 pb-8 pt-6">
           <SiteHeader />
         </div>
-        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-8 px-5 pb-12 lg:grid-cols-[1fr_minmax(0,480px)]">
+        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-10 px-5 pb-12 lg:grid-cols-[1fr_minmax(0,480px)]">
           <div>
-            <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] font-medium text-ink-2">
-              <span className="size-1.5 animate-pulse rounded-full bg-elite" />
-              Live benchmarks · updated hourly
+            <div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-widest text-ink-3">
+              <span className="size-1.5 rounded-full bg-elite" />
+              Live · updated hourly
             </div>
-            <h1 className="font-display text-[36px] font-bold leading-[1.04] text-ink sm:text-[46px]">
+            <h1 className="font-display text-[38px] font-bold leading-[1.02] text-ink sm:text-[48px]">
               Find &amp; understand
               <br />
-              <span className="text-gradient">every LLM.</span>
+              every LLM.
             </h1>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-2">
               The leaderboard for AI models — ranked by real intelligence benchmarks, speed, and price.
               Compare, filter, and dig into any model.
             </p>
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
-              <StatPill value={stats.models} label="models" />
+            <div className="mt-7 flex items-stretch divide-x divide-line border-y border-line">
+              <StatPill value={stats.models} label="models" first />
               <StatPill value={stats.providers} label="providers" />
               <StatPill value={stats.benchmarked} label="benchmarked" />
             </div>
@@ -74,7 +74,7 @@ export default async function Home() {
                 <Link
                   key={c.slug}
                   href={`/best/${c.slug}`}
-                  className="rounded-full border border-line bg-surface px-2.5 py-1 text-[12px] text-ink-2 transition-colors hover:text-brand-ink"
+                  className="rounded-md border border-line px-2.5 py-1 text-[12px] font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
                 >
                   {c.title}
                 </Link>

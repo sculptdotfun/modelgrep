@@ -64,7 +64,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
         <h1 className="font-display mt-4 text-[30px] font-bold text-ink sm:text-[34px]">{c.title}</h1>
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-2">{c.blurb}</p>
 
-        <ol className="card-shadow mt-7 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+        <ol className="card-shadow mt-7 divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
           {ranked.map((m, i) => (
             <li key={m.id}>
               <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface-2/60">
@@ -93,7 +93,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
           <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-3">More rankings</div>
           <div className="flex flex-wrap gap-2">
             {COLLECTIONS.filter((x) => x.slug !== c.slug).map((x) => (
-              <Link key={x.slug} href={`/best/${x.slug}`} className="rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-2 hover:text-ink">
+              <Link key={x.slug} href={`/best/${x.slug}`} className="rounded-md border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-2 hover:text-ink">
                 {x.title}
               </Link>
             ))}

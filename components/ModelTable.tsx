@@ -44,15 +44,10 @@ const BAR_FILL: Record<Tier, string> = {
   na: "bg-ink-3",
 };
 
+// Plain ranks; the top three carry weight through type, not decoration.
 function MedalRank({ rank }: { rank: number }) {
-  if (rank > 3) return <span className="font-mono text-xs tabular-nums text-ink-3">{rank}</span>;
-  const styles = [
-    "bg-amber-100 text-amber-700 ring-amber-300",
-    "bg-zinc-100 text-zinc-600 ring-zinc-300",
-    "bg-orange-100 text-orange-700 ring-orange-300",
-  ][rank - 1];
   return (
-    <span className={clsx("inline-flex size-5 items-center justify-center rounded-full text-[11px] font-bold ring-1 ring-inset", styles)}>
+    <span className={clsx("font-mono text-xs tabular-nums", rank <= 3 ? "font-bold text-ink" : "text-ink-3")}>
       {rank}
     </span>
   );
@@ -99,7 +94,7 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
 
       <td className="py-3 pr-3 align-middle">
         <div className="flex items-center gap-2.5">
-          <span className="size-2.5 shrink-0 rounded-[3px]" style={{ background: oc }} />
+          <span className="size-2.5 shrink-0 rounded-[2px]" style={{ background: oc }} />
           <Link href={href} onClick={(e) => e.stopPropagation()} className="font-mono text-[13.5px] leading-none">
             <span className="text-ink-3">{owner}</span>
             <span className="font-semibold text-ink group-hover:text-brand-ink">{rest}</span>
@@ -111,9 +106,9 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
       {/* Intelligence — the anchor metric, the only ranked color (heatmap down the list) */}
       <td className="py-3 pr-4 align-middle">
         <div className="ml-auto flex w-[128px] items-center gap-2.5">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+          <div className="h-[5px] flex-1 overflow-hidden rounded-[1px] bg-surface-2">
             {intel != null && (
-              <div className={clsx("h-full rounded-full", BAR_FILL[it])} style={{ width: `${Math.min(100, (intel / 65) * 100)}%` }} />
+              <div className={clsx("h-full rounded-[1px]", BAR_FILL[it])} style={{ width: `${Math.min(100, (intel / 65) * 100)}%` }} />
             )}
           </div>
           <span className={clsx("w-9 text-right font-bold", NUM, intel != null ? "text-ink" : "text-ink-3")}>
@@ -161,8 +156,8 @@ export function ModelTable({ models }: { models: LiteModel[] }) {
   const visible = showAll ? rows : rows.slice(0, INITIAL_ROWS);
 
   return (
-    <div className="card-shadow rounded-2xl border border-line bg-surface">
-      <div className="flex items-center justify-between rounded-t-2xl border-b border-line px-4 py-2.5 text-xs text-ink-2">
+    <div className="rounded-lg border border-line bg-surface">
+      <div className="flex items-center justify-between rounded-t-lg border-b border-line px-4 py-2.5 text-xs text-ink-2">
         <span>
           <strong className="text-ink">{rows.length}</strong> models
         </span>

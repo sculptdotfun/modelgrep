@@ -9,13 +9,8 @@ export function OwnerAvatar({ owner, size = 44 }: { owner: string; size?: number
   const c = ownerColor(owner);
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center rounded-xl font-bold text-white"
-      style={{
-        width: size,
-        height: size,
-        fontSize: size * 0.42,
-        background: `linear-gradient(150deg, ${c}, color-mix(in srgb, ${c} 78%, #000))`,
-      }}
+      className="inline-flex shrink-0 items-center justify-center rounded-lg font-bold text-white"
+      style={{ width: size, height: size, fontSize: size * 0.42, background: c }}
     >
       {owner.charAt(0).toUpperCase()}
     </span>
@@ -113,8 +108,8 @@ export function ScorePill({ value, pctile, tier }: { value: string; pctile?: num
     <span className="inline-flex flex-col items-end gap-1">
       <span className={clsx("font-mono text-sm font-semibold tabular-nums", tierColor[tier])}>{value}</span>
       {pctile != null && (
-        <span className="h-1 w-12 overflow-hidden rounded-full bg-surface-2">
-          <span className={clsx("block h-full rounded-full", BAR_BG[tier])} style={{ width: `${Math.max(4, pctile)}%` }} />
+        <span className="h-1 w-12 overflow-hidden rounded-[1px] bg-surface-2">
+          <span className={clsx("block h-full rounded-[1px]", BAR_BG[tier])} style={{ width: `${Math.max(4, pctile)}%` }} />
         </span>
       )}
     </span>
@@ -135,9 +130,9 @@ export function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="card-shadow rounded-xl border border-line bg-surface p-3.5">
+    <div className="rounded-lg border border-line bg-surface p-3.5">
       <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-3">{label}</div>
-      <div className={clsx("font-display mt-1 text-[26px] font-bold leading-none", accent ?? "text-ink")}>
+      <div className={clsx("font-mono mt-1.5 text-[24px] font-bold leading-none tracking-tight", accent ?? "text-ink")}>
         {value}
       </div>
       {sub && <div className="mt-1.5 truncate font-mono text-[11px] text-ink-3">{sub}</div>}

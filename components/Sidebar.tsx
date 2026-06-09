@@ -48,8 +48,8 @@ export function SidebarContent({
               className={clsx(
                 "flex items-center justify-between rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
                 f.preset === p.id
-                  ? "bg-brand/10 font-medium text-brand-ink ring-1 ring-inset ring-brand/20"
-                  : "text-ink-2 hover:bg-surface-2 hover:text-ink",
+                  ? "bg-surface-2 font-semibold text-ink"
+                  : "text-ink-2 hover:bg-surface-2/60 hover:text-ink",
               )}
             >
               {p.label}
@@ -64,16 +64,16 @@ export function SidebarContent({
         <div className="flex flex-col gap-0.5">
           {CAPS.map((c) => (
             <label key={c.id} className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] text-ink-2 hover:bg-surface-2">
-              <input type="checkbox" checked={f.caps[c.id]} onChange={() => f.toggleCap(c.id)} className="size-3.5 accent-[var(--color-brand)]" />
+              <input type="checkbox" checked={f.caps[c.id]} onChange={() => f.toggleCap(c.id)} className="size-3.5 accent-[#101014]" />
               {c.label}
             </label>
           ))}
           <label className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] text-ink-2 hover:bg-surface-2">
-            <input type="checkbox" checked={f.benchOnly} onChange={() => f.setField("benchOnly", !f.benchOnly)} className="size-3.5 accent-[var(--color-brand)]" />
+            <input type="checkbox" checked={f.benchOnly} onChange={() => f.setField("benchOnly", !f.benchOnly)} className="size-3.5 accent-[#101014]" />
             Has benchmarks
           </label>
           <label className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] text-ink-2 hover:bg-surface-2">
-            <input type="checkbox" checked={f.freeOnly} onChange={() => f.setField("freeOnly", !f.freeOnly)} className="size-3.5 accent-[var(--color-brand)]" />
+            <input type="checkbox" checked={f.freeOnly} onChange={() => f.setField("freeOnly", !f.freeOnly)} className="size-3.5 accent-[#101014]" />
             Free only
           </label>
         </div>
@@ -91,7 +91,7 @@ export function SidebarContent({
               value={f.maxPrice ?? ""}
               onChange={(e) => f.setField("maxPrice", e.target.value === "" ? null : Number(e.target.value))}
               placeholder="any"
-              className="w-16 rounded-md border border-line bg-surface px-2 py-1 text-right font-mono text-[12px] text-ink outline-none focus:border-brand/50"
+              className="w-16 rounded-md border border-line bg-surface px-2 py-1 text-right font-mono text-[12px] text-ink outline-none focus:border-ink"
             />
           </label>
           <label className="flex items-center justify-between gap-2 text-[13px] text-ink-2">
@@ -104,7 +104,7 @@ export function SidebarContent({
                 value={f.minContext != null ? Math.round(f.minContext / 1000) : ""}
                 onChange={(e) => f.setField("minContext", e.target.value === "" ? null : Number(e.target.value) * 1000)}
                 placeholder="any"
-                className="w-14 rounded-md border border-line bg-surface px-2 py-1 text-right font-mono text-[12px] text-ink outline-none focus:border-brand/50"
+                className="w-14 rounded-md border border-line bg-surface px-2 py-1 text-right font-mono text-[12px] text-ink outline-none focus:border-ink"
               />
               <span className="font-mono text-[11px] text-ink-3">K</span>
             </span>
@@ -118,7 +118,7 @@ export function SidebarContent({
           <select
             value={f.provider}
             onChange={(e) => f.setField("provider", e.target.value)}
-            className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-[13px] text-ink-2 outline-none focus:border-brand/50"
+            className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-[13px] text-ink-2 outline-none focus:border-ink"
           >
             <option value="">All providers</option>
             {providers.map((p) => (
