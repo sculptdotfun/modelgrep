@@ -101,10 +101,9 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
             href={href}
             onClick={(e) => e.stopPropagation()}
             title={m.id}
-            className="truncate whitespace-nowrap font-mono text-[13.5px] leading-none"
+            className="truncate whitespace-nowrap font-mono text-[13.5px] font-semibold leading-none text-ink group-hover:text-brand-ink"
           >
-            <span className="text-ink-3">{owner}</span>
-            <span className="font-semibold text-ink group-hover:text-brand-ink">{rest}</span>
+            {rest.slice(1)}
           </Link>
           <span className="hidden shrink-0 md:inline-flex">
             <CapIcons caps={m.capabilities} />

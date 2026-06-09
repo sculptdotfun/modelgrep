@@ -71,7 +71,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
                 <span className="w-5 shrink-0 text-right font-mono text-xs tabular-nums text-ink-3">{i + 1}</span>
                 <OwnerAvatar owner={modelOwner(m.id)} size={30} />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-mono text-[13px] font-medium text-ink group-hover:text-brand-ink">{m.id}</div>
+                  <div title={m.id} className="truncate font-mono text-[13px] font-semibold text-ink group-hover:text-brand-ink">{m.id.split("/").slice(1).join("/")}</div>
                   <div className="mt-1">
                     <CapBadges caps={m.capabilities} max={3} variant="muted" />
                   </div>

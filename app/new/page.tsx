@@ -66,7 +66,7 @@ export default async function NewModelsPage() {
               <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-4 transition-colors hover:bg-surface-2/60">
                 <OwnerAvatar owner={modelOwner(m.id)} size={30} />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-mono text-[13px] font-medium text-ink group-hover:text-brand-ink">{m.id}</div>
+                  <div title={m.id} className="truncate font-mono text-[13px] font-semibold text-ink group-hover:text-brand-ink">{m.id.split("/").slice(1).join("/")}</div>
                   <div className="mt-1 flex items-center gap-2">
                     <span className="font-mono text-[10px] uppercase tracking-wider text-ink-3">{fmtDate(m.created)}</span>
                     <CapBadges caps={m.capabilities} max={3} variant="muted" />
