@@ -406,7 +406,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
                 <tbody>
                   {m.provider_details.map((p, i) => (
                     <tr key={`${p.name}-${i}`} className="border-b border-line last:border-0 hover:bg-surface-2/60">
-                      <td className="px-4 py-2.5">
+                      <td className="px-4 py-3">
                         <span className="font-medium text-ink">{p.name}</span>
                         {p.quantization && p.quantization !== "unknown" && (
                           <span className="ml-2 rounded bg-amber-50 px-1.5 py-0.5 text-[10px] text-amber-700 ring-1 ring-inset ring-amber-200">{p.quantization}</span>
@@ -415,10 +415,10 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
                           <span className="ml-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] text-emerald-700 ring-1 ring-inset ring-emerald-200">cache</span>
                         )}
                       </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-xs text-ink">{fmtPrice(p.price_input)}</td>
-                      <td className="px-3 py-2.5 text-right font-mono text-xs text-ink">{fmtPrice(p.price_output)}</td>
-                      <td className="hidden px-3 py-2.5 text-right font-mono text-xs text-ink-2 sm:table-cell">{fmtContext(p.context_length)}</td>
-                      <td className="px-4 py-2.5 text-right">
+                      <td className="px-3 py-3 text-right font-mono text-xs text-ink">{fmtPrice(p.price_input)}</td>
+                      <td className="px-3 py-3 text-right font-mono text-xs text-ink">{fmtPrice(p.price_output)}</td>
+                      <td className="hidden px-3 py-3 text-right font-mono text-xs text-ink-2 sm:table-cell">{fmtContext(p.context_length)}</td>
+                      <td className="px-4 py-3 text-right">
                         <Metric value={p.uptime != null ? `${p.uptime}%` : "—"} tier={uptimeTier(p.uptime)} className="text-xs" />
                       </td>
                     </tr>

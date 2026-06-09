@@ -105,17 +105,17 @@ export default async function MakerPage({ params }: { params: Promise<Params> })
             <thead>
               <tr className="border-b border-line text-[10px] uppercase tracking-wider text-ink-3">
                 <th className="px-4 py-2.5 text-left font-semibold">Model</th>
-                <th className="px-3 py-2.5 text-right font-semibold">Intel</th>
-                <th className="hidden px-3 py-2.5 text-right font-semibold sm:table-cell">Speed</th>
-                <th className="hidden px-3 py-2.5 text-right font-semibold sm:table-cell">Latency</th>
-                <th className="px-3 py-2.5 text-right font-semibold">In $/M</th>
-                <th className="px-4 py-2.5 text-right font-semibold">Context</th>
+                <th className="px-3 py-3.5 text-right font-semibold">Intel</th>
+                <th className="hidden px-3 py-3.5 text-right font-semibold sm:table-cell">Speed</th>
+                <th className="hidden px-3 py-3.5 text-right font-semibold sm:table-cell">Latency</th>
+                <th className="px-3 py-3.5 text-right font-semibold">In $/M</th>
+                <th className="px-4 py-3.5 text-right font-semibold">Context</th>
               </tr>
             </thead>
             <tbody>
               {mk.models.map((m) => (
                 <tr key={m.id} className="border-b border-line transition-colors last:border-0 hover:bg-surface-2/60">
-                  <td className="px-4 py-2.5">
+                  <td className="px-4 py-3.5">
                     <Link href={`/models/${m.id}`} className="font-mono text-[13px] font-medium text-ink hover:text-brand-ink">
                       {m.id.split("/").slice(1).join("/")}
                     </Link>
@@ -123,17 +123,17 @@ export default async function MakerPage({ params }: { params: Promise<Params> })
                       <CapBadges caps={m.capabilities} max={3} variant="muted" />
                     </div>
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[13px] font-semibold tabular-nums text-ink">
+                  <td className="px-3 py-3.5 text-right font-mono text-[13px] font-semibold tabular-nums text-ink">
                     {m.aa?.intelligence != null ? m.aa.intelligence.toFixed(1) : "—"}
                   </td>
-                  <td className="hidden px-3 py-2.5 text-right font-mono text-[13px] tabular-nums text-ink-2 sm:table-cell">
+                  <td className="hidden px-3 py-3.5 text-right font-mono text-[13px] tabular-nums text-ink-2 sm:table-cell">
                     {m.throughput ? fmtThroughput(m.throughput) : "—"}
                   </td>
-                  <td className="hidden px-3 py-2.5 text-right font-mono text-[13px] tabular-nums text-ink-2 sm:table-cell">
+                  <td className="hidden px-3 py-3.5 text-right font-mono text-[13px] tabular-nums text-ink-2 sm:table-cell">
                     {fmtLatency(m.latency)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[13px] tabular-nums text-ink">{fmtPrice(m.price_input)}</td>
-                  <td className="px-4 py-2.5 text-right font-mono text-[13px] tabular-nums text-ink-2">{fmtContext(m.context_length)}</td>
+                  <td className="px-3 py-3.5 text-right font-mono text-[13px] tabular-nums text-ink">{fmtPrice(m.price_input)}</td>
+                  <td className="px-4 py-3.5 text-right font-mono text-[13px] tabular-nums text-ink-2">{fmtContext(m.context_length)}</td>
                 </tr>
               ))}
             </tbody>

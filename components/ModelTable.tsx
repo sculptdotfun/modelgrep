@@ -57,7 +57,7 @@ function SortHeader({ col, alwaysRight = true }: { col: Col; alwaysRight?: boole
   const { sortKey, sortDir, setSort } = useFilters();
   const active = sortKey === col.key;
   return (
-    <th className={clsx("select-none px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider", alwaysRight && "text-right", col.hideAt)}>
+    <th className={clsx("select-none px-2 py-3 text-[10px] font-semibold uppercase tracking-wider", alwaysRight && "text-right", col.hideAt)}>
       <button
         onClick={() => setSort(col.key)}
         className={clsx("inline-flex items-center gap-1 transition-colors", active ? "text-ink" : "text-ink-3 hover:text-ink-2")}
@@ -88,24 +88,33 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
 
   return (
     <tr onClick={() => router.push(href)} className="group cursor-pointer border-t border-line transition-colors hover:bg-surface-2/60">
-      <td className="w-10 py-3 pl-4 pr-1 text-center align-middle">
+      <td className="w-10 py-4 pl-4 pr-1 text-center align-middle">
         <MedalRank rank={rank} />
       </td>
 
-      <td className="py-3 pr-3 align-middle">
-        <div className="flex items-center gap-2.5">
+      {/* The one flexible column: absorbs leftover width and truncates long
+          names, so the table can never overflow its card. */}
+      <td className="w-full max-w-0 py-4 pr-3 align-middle">
+        <div className="flex min-w-0 items-center gap-2">
           <span className="size-2.5 shrink-0 rounded-[2px]" style={{ background: oc }} />
-          <Link href={href} onClick={(e) => e.stopPropagation()} className="font-mono text-[13.5px] leading-none">
+          <Link
+            href={href}
+            onClick={(e) => e.stopPropagation()}
+            title={m.id}
+            className="truncate whitespace-nowrap font-mono text-[13.5px] leading-none"
+          >
             <span className="text-ink-3">{owner}</span>
             <span className="font-semibold text-ink group-hover:text-brand-ink">{rest}</span>
           </Link>
-          <CapIcons caps={m.capabilities} />
+          <span className="hidden shrink-0 md:inline-flex">
+            <CapIcons caps={m.capabilities} />
+          </span>
         </div>
       </td>
 
       {/* Intelligence — the anchor metric, the only ranked color (heatmap down the list) */}
-      <td className="py-3 pr-4 align-middle">
-        <div className="ml-auto flex w-[128px] items-center gap-2.5">
+      <td className="py-4 pr-4 align-middle">
+        <div className="ml-auto flex w-[112px] items-center gap-2">
           <div className="h-[5px] flex-1 overflow-hidden rounded-[1px] bg-surface-2">
             {intel != null && (
               <div className={clsx("h-full rounded-[1px]", BAR_FILL[it])} style={{ width: `${Math.min(100, (intel / 65) * 100)}%` }} />
@@ -117,10 +126,10 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
         </div>
       </td>
 
-      <td className={clsx("hidden px-3 py-3 text-right align-middle lg:table-cell", NUM, coding != null ? "text-ink" : "text-ink-3")}>
+      <td className={clsx("hidden whitespace-nowrap px-2 py-4 text-right align-middle lg:table-cell", NUM, coding != null ? "text-ink" : "text-ink-3")}>
         {coding != null ? coding.toFixed(1) : "—"}
       </td>
-      <td className="hidden px-3 py-3 text-right align-middle xl:table-cell">
+      <td className="hidden whitespace-nowrap px-2 py-4 text-right align-middle xl:table-cell">
         {elo != null ? (
           <div className="flex flex-col items-end leading-none">
             <span className={clsx(NUM, "font-medium text-ink")}>{elo}</span>
@@ -131,17 +140,17 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
         )}
       </td>
 
-      <td className={clsx("px-3 py-3 text-right align-middle", NUM, m.throughput ? "text-ink" : "text-ink-3")}>
+      <td className={clsx("whitespace-nowrap px-2 py-4 text-right align-middle", NUM, m.throughput ? "text-ink" : "text-ink-3")}>
         {m.throughput ? fmtThroughput(m.throughput) : "—"}
       </td>
-      <td className={clsx("hidden px-3 py-3 text-right align-middle md:table-cell", NUM, m.latency == null ? "text-ink-3" : slow ? "text-low" : "text-ink-2")}>
+      <td className={clsx("hidden whitespace-nowrap px-2 py-4 text-right align-middle md:table-cell", NUM, m.latency == null ? "text-ink-3" : slow ? "text-low" : "text-ink-2")}>
         {fmtLatency(m.latency)}
       </td>
-      <td className={clsx("px-3 py-3 text-right align-middle", NUM, free ? "font-semibold text-elite" : "text-ink")}>
+      <td className={clsx("whitespace-nowrap px-2 py-4 text-right align-middle", NUM, free ? "font-semibold text-elite" : "text-ink")}>
         {fmtPrice(m.price_input)}
       </td>
-      <td className={clsx("hidden px-3 py-3 text-right align-middle sm:table-cell", NUM, "text-ink-2")}>{fmtPrice(m.price_output)}</td>
-      <td className={clsx("px-3 py-3 pr-4 text-right align-middle", NUM, "text-ink-2")}>{fmtContext(m.context_length)}</td>
+      <td className={clsx("hidden whitespace-nowrap px-2 py-4 text-right align-middle sm:table-cell", NUM, "text-ink-2")}>{fmtPrice(m.price_output)}</td>
+      <td className={clsx("whitespace-nowrap px-2 py-4 pr-4 text-right align-middle", NUM, "text-ink-2")}>{fmtContext(m.context_length)}</td>
     </tr>
   );
 }
@@ -169,9 +178,9 @@ export function ModelTable({ models }: { models: LiteModel[] }) {
         <table className="w-full border-collapse">
           <thead className="sticky top-0 z-20 bg-surface/95 backdrop-blur">
             <tr className="border-b border-line">
-              <th className="w-10 py-2.5 pl-4 pr-1 text-center text-[10px] font-semibold uppercase tracking-wider text-ink-3">#</th>
-              <th className="py-2.5 pr-3 text-left text-[10px] font-semibold uppercase tracking-wider text-ink-3">Model</th>
-              <th className="py-2.5 pr-4 text-right">
+              <th className="w-10 py-3 pl-4 pr-1 text-center text-[10px] font-semibold uppercase tracking-wider text-ink-3">#</th>
+              <th className="py-3 pr-3 text-left text-[10px] font-semibold uppercase tracking-wider text-ink-3">Model</th>
+              <th className="py-3 pr-4 text-right">
                 <button
                   onClick={() => filters.setSort("intelligence")}
                   className={clsx(

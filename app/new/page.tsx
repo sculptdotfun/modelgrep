@@ -63,7 +63,7 @@ export default async function NewModelsPage() {
         <ol className="mt-7 divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
           {recent.map((m) => (
             <li key={m.id}>
-              <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface-2/60">
+              <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-4 transition-colors hover:bg-surface-2/60">
                 <OwnerAvatar owner={modelOwner(m.id)} size={30} />
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-mono text-[13px] font-medium text-ink group-hover:text-brand-ink">{m.id}</div>

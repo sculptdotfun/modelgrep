@@ -67,7 +67,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
         <ol className="card-shadow mt-7 divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
           {ranked.map((m, i) => (
             <li key={m.id}>
-              <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface-2/60">
+              <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-4 transition-colors hover:bg-surface-2/60">
                 <span className="w-5 shrink-0 text-right font-mono text-xs tabular-nums text-ink-3">{i + 1}</span>
                 <OwnerAvatar owner={modelOwner(m.id)} size={30} />
                 <div className="min-w-0 flex-1">

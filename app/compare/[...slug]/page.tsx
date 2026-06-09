@@ -65,12 +65,12 @@ function MetricRow({ metric, a, b }: { metric: (typeof COMPARE_METRICS)[number];
   const w = winner(metric, a, b);
   return (
     <tr className="border-t border-line">
-      <td className="px-4 py-3 text-sm text-ink-2">{metric.label}</td>
-      <td className={clsx("px-4 py-3 text-right font-mono text-[13px] tabular-nums", w === -1 ? "font-bold text-elite" : "text-ink")}>
+      <td className="px-4 py-3.5 text-sm text-ink-2">{metric.label}</td>
+      <td className={clsx("px-4 py-3.5 text-right font-mono text-[13px] tabular-nums", w === -1 ? "font-bold text-elite" : "text-ink")}>
         {metric.fmt(metric.get(a))}
         {w === -1 && <span className="ml-1.5 text-[10px]">✓</span>}
       </td>
-      <td className={clsx("px-4 py-3 text-right font-mono text-[13px] tabular-nums", w === 1 ? "font-bold text-elite" : "text-ink")}>
+      <td className={clsx("px-4 py-3.5 text-right font-mono text-[13px] tabular-nums", w === 1 ? "font-bold text-elite" : "text-ink")}>
         {metric.fmt(metric.get(b))}
         {w === 1 && <span className="ml-1.5 text-[10px]">✓</span>}
       </td>
@@ -147,7 +147,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
                 <MetricRow key={metric.key} metric={metric} a={a} b={b} />
               ))}
               <tr className="border-t border-line">
-                <td className="px-4 py-3 text-sm text-ink-2">Capabilities</td>
+                <td className="px-4 py-3.5 text-sm text-ink-2">Capabilities</td>
                 <td className="px-4 py-3 text-right">
                   <span className="inline-flex justify-end">
                     <CapBadges caps={a.capabilities} variant="muted" />
