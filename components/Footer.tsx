@@ -37,6 +37,25 @@ export function Footer() {
                 ))}
               </div>
             </div>
+            <div>
+              <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Browse</div>
+              <div className="flex flex-col gap-1.5">
+                <Link href="/new" className="text-[13px] text-ink-2 hover:text-brand-ink">
+                  New models
+                </Link>
+                <Link href="/compare" className="text-[13px] text-ink-2 hover:text-brand-ink">
+                  Compare models
+                </Link>
+                <Link href="/glossary" className="text-[13px] text-ink-2 hover:text-brand-ink">
+                  LLM glossary
+                </Link>
+                {["openai", "anthropic", "google", "qwen", "deepseek", "meta-llama"].map((o) => (
+                  <Link key={o} href={`/makers/${o}`} className="text-[13px] text-ink-2 hover:text-brand-ink">
+                    {o === "meta-llama" ? "Meta" : o.charAt(0).toUpperCase() + o.slice(1)} models
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         <div className="mt-8 border-t border-line pt-5 text-xs text-ink-3">

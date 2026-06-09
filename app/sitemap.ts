@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { getCatalog } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/collections";
 import { BLOG_POSTS } from "@/lib/blog";
+import { GLOSSARY } from "@/lib/glossary";
+import { groupByMaker } from "@/lib/makers";
 
 export const revalidate = 3600;
 
@@ -53,11 +55,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
+  const makerUrls: MetadataRoute.Sitemap = groupByMaker(models)
+    .filter((mk) => mk.models.length >= 2)
+    .map((mk) => ({
+      url: `${BASE}/makers/${mk.slug}`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.7,
+    }));
+
+  const glossaryUrls: MetadataRoute.Sitemap = [
+    { url: `${BASE}/glossary`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    ...GLOSSARY.map((t) => ({
+      url: `${BASE}/glossary/${t.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+  ];
+
   return [
     { url: BASE, lastModified: now, changeFrequency: "hourly", priority: 1 },
+    { url: `${BASE}/new`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE}/compare`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
     ...collectionUrls,
+    ...makerUrls,
     ...modelUrls,
     ...compareUrls,
     ...blogUrls,
+    ...glossaryUrls,
   ];
 }

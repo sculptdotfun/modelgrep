@@ -117,6 +117,28 @@ export const COLLECTIONS: Collection[] = [
     sort: byIntelDesc,
   },
   {
+    slug: "agents",
+    title: "Best LLMs for Agents",
+    blurb:
+      "AI models ranked by the Artificial Analysis Agentic Index — measuring multi-step tool use, planning and task completion (including Tau²-Bench). The best models for building autonomous agents and agentic workflows.",
+    metricLabel: "Agentic",
+    value: (m) => m.aa?.agentic ?? null,
+    display: (m) => m.aa!.agentic!.toFixed(1),
+    filter: (m) => m.aa?.agentic != null,
+    sort: (a, b) => (b.aa?.agentic ?? -1) - (a.aa?.agentic ?? -1),
+  },
+  {
+    slug: "open-source",
+    title: "Best Open-Source LLMs",
+    blurb:
+      "The best open-weight AI models — downloadable from Hugging Face and self-hostable — ranked by intelligence. Open-source alternatives to proprietary frontier models.",
+    metricLabel: "Intelligence",
+    value: (m) => m.aa?.intelligence ?? null,
+    display: (m) => (m.aa?.intelligence != null ? m.aa.intelligence.toFixed(1) : "—"),
+    filter: (m) => Boolean(m.hugging_face_id),
+    sort: byIntelDesc,
+  },
+  {
     slug: "long-context",
     title: "Longest-Context LLMs",
     blurb:

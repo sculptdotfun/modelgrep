@@ -11,6 +11,12 @@ export function SiteHeader() {
         <Link href="/" className="transition-colors hover:text-ink">
           Leaderboard
         </Link>
+        <Link href="/compare" className="hidden transition-colors hover:text-ink sm:block">
+          Compare
+        </Link>
+        <Link href="/new" className="transition-colors hover:text-ink">
+          New
+        </Link>
         <Link href="/best/smartest" className="transition-colors hover:text-ink">
           Rankings
         </Link>

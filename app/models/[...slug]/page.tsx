@@ -272,7 +272,9 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
             models
           </Link>
           <span className="mx-1.5">/</span>
-          <span className="text-ink-2">{modelOwner(m.id)}</span>
+          <Link href={`/makers/${modelOwner(m.id)}`} className="text-ink-2 hover:text-ink">
+            {modelOwner(m.id)}
+          </Link>
           <span className="mx-1.5">/</span>
           <span className="text-ink">{m.id.split("/").slice(1).join("/")}</span>
         </nav>
