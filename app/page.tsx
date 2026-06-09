@@ -46,10 +46,10 @@ export default async function Home() {
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <section className="border-b border-line bg-surface">
-        <div className="mx-auto w-full max-w-[1320px] px-5 pb-8 pt-6">
+        <div className="mx-auto w-full max-w-[1200px] px-5 pb-8 pt-6">
           <SiteHeader />
         </div>
-        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-10 px-5 pb-12 lg:grid-cols-[1fr_minmax(0,480px)]">
+        <div className="mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 pb-12 lg:grid-cols-[1fr_minmax(0,480px)]">
           <div>
             <div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-widest text-ink-3">
               <span className="size-1.5 rounded-full bg-elite" />

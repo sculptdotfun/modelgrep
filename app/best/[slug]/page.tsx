@@ -50,7 +50,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="mx-auto w-full max-w-[860px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
 
         <nav className="mt-5 text-xs text-ink-3">

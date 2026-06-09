@@ -5,7 +5,7 @@ import { BLOG_POSTS } from "@/lib/blog";
 export function Footer() {
   return (
     <footer className="mt-12 border-t border-line">
-      <div className="mx-auto w-full max-w-[1320px] px-5 py-9">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-9">
         <div className="flex flex-col gap-6 sm:flex-row sm:justify-between">
           <div className="max-w-xs">
             <Link href="/" className="font-mono text-[15px] font-bold tracking-tight text-ink">

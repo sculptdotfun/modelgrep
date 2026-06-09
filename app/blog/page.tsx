@@ -21,7 +21,7 @@ export default function BlogIndex() {
   const posts = [...BLOG_POSTS].sort((a, b) => b.date.localeCompare(a.date));
   return (
     <div className="min-h-screen">
-      <div className="mx-auto w-full max-w-[860px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
 
         <h1 className="font-display mt-8 text-[32px] font-bold text-ink">Blog</h1>

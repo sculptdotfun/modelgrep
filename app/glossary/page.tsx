@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function GlossaryIndex() {
   return (
     <div className="min-h-screen">
-      <div className="mx-auto w-full max-w-[860px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
 
         <h1 className="font-display mt-8 text-[30px] font-bold text-ink sm:text-[34px]">LLM glossary</h1>

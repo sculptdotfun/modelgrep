@@ -69,7 +69,7 @@ export default async function MakerPage({ params }: { params: Promise<Params> })
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="mx-auto w-full max-w-[980px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
 
         <nav className="mt-7 text-xs text-ink-3">

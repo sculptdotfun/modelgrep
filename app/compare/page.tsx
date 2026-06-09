@@ -39,7 +39,7 @@ export default async function CompareIndex() {
 
   return (
     <div className="min-h-screen">
-      <div className="mx-auto w-full max-w-[980px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
 
         <h1 className="font-display mt-8 text-[30px] font-bold text-ink sm:text-[34px]">Compare models</h1>

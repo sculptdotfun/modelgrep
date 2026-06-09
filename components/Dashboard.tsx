@@ -52,7 +52,7 @@ export function Dashboard({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="mx-auto w-full max-w-[1320px] px-5 pb-12">
+    <div className="mx-auto w-full max-w-[1200px] px-5 pb-12">
       <div className="mb-4 flex items-center gap-2">
         <button
           onClick={() => setMenuOpen(true)}

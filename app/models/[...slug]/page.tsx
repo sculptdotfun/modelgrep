@@ -96,7 +96,7 @@ function Section({ title, children, aside }: { title: string; children: React.Re
   return (
     <section className="mt-9">
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-ink-3">{title}</h2>
+        <h2 className="text-[11px] font-semibold uppercase tracking-wider text-ink-3">{title}</h2>
         {aside}
       </div>
       {children}
@@ -265,7 +265,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="mx-auto w-full max-w-[1320px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
         <nav className="mb-5 mt-6 text-xs text-ink-3">
           <Link href="/" className="hover:text-ink-2">

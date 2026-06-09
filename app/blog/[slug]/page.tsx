@@ -45,8 +45,10 @@ export default async function BlogPost({ params }: { params: Promise<Params> }) 
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="mx-auto w-full max-w-[760px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
+
+        <div className="mx-auto max-w-[760px]">
 
         <nav className="mt-7 text-xs text-ink-3">
           <Link href="/blog" className="hover:text-ink-2">
@@ -77,6 +79,7 @@ export default async function BlogPost({ params }: { params: Promise<Params> }) 
               </Link>
             ))}
           </div>
+        </div>
         </div>
       </div>
       <Footer />

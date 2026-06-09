@@ -118,7 +118,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="mx-auto w-full max-w-[860px] px-5 py-7">
+      <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
         <SiteHeader />
 
         <h1 className="font-display mt-6 text-center text-[28px] font-bold text-ink sm:text-[32px]">
