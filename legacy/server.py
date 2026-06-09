@@ -6,6 +6,7 @@ Fetches and serves model data with filtering capabilities
 
 import json
 import os
+import re
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -14,12 +15,31 @@ import threading
 import time
 
 BASE_URL = "https://openrouter.ai/api/v1"
-FRONTEND_STATS_URL = "https://openrouter.ai/api/frontend/stats/endpoint"
+INTERNAL_URL = "https://openrouter.ai/api/internal/v1"
+SITE_URL = "https://openrouter.ai"
 FAL_API_URL = "https://api.fal.ai/v1"
 CACHE_FILE = "model_cache.json"
+BENCH_CACHE_FILE = "bench_cache.json"
 FAL_CACHE_FILE = "fal_cache.json"
 CACHE_TTL = 300  # 5 minutes
+BENCH_CACHE_TTL = 86400  # 24h — benchmarks change rarely, fetched on a slower cycle
 FAL_CACHE_TTL = 21600  # 6 hours
+
+# OpenRouter's internal/RSC routes 403 plain clients; mimic a browser.
+OR_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
+    ),
+    "Referer": "https://openrouter.ai/",
+    "Accept": "application/json, text/plain, */*",
+}
+
+# Benchmark cache (separate, slower TTL than live perf/pricing)
+cached_benchmarks = {}  # canonical_slug -> {"aa": {...}|None, "da": {...}|None}
+bench_cache_timestamp = 0
+bench_cache_lock = threading.Lock()
+bench_cache_loading = False
 
 cached_models = []
 cache_timestamp = 0
@@ -50,167 +70,220 @@ def get_endpoints(model_id):
     return None
 
 
-def get_frontend_stats(model_slug):
-    """Fetch frontend stats for a model (includes throughput/latency)"""
+_PERF_RE = re.compile(r'"p50_throughput":([0-9.]+),"p50_latency":([0-9.]+)')
+
+
+def get_perf(model_id):
+    """Parse live p50 throughput/latency from a model's /performance RSC payload.
+
+    OpenRouter removed the old /api/frontend/stats/endpoint JSON API, so the
+    only remaining source for live speed/latency is the server-component
+    payload behind the model's Performance tab. We take the best throughput
+    and best (lowest) latency across providers.
+    """
     try:
         resp = requests.get(
-            FRONTEND_STATS_URL,
-            params={"permaslug": model_slug, "variant": "standard"},
-            timeout=10
+            f"{SITE_URL}/{model_id}/performance",
+            headers={**OR_HEADERS, "RSC": "1"},
+            timeout=15,
         )
-        if resp.status_code == 200:
-            return resp.json().get("data", [])
+        if resp.status_code != 200:
+            return None
+        pairs = _PERF_RE.findall(resp.text)
+        if not pairs:
+            return None
+        best_tp = max(float(tp) for tp, _ in pairs)
+        best_lat = min(float(lat) for _, lat in pairs)
+        return {
+            "throughput": round(best_tp, 1) if best_tp > 0 else 0,
+            "latency": round(best_lat) if best_lat > 0 else None,
+        }
     except Exception:
-        pass
-    return []
+        return None
 
 
-def extract_stats(model):
-    """Extract best throughput/latency from endpoints"""
-    endpoints_data = model.get("endpoints") or {}
-    endpoints_list = endpoints_data.get("endpoints", [])
+def get_aa_benchmark(canonical_slug):
+    """Artificial Analysis eval scores via OpenRouter's internal API, keyed by permaslug."""
+    try:
+        resp = requests.get(
+            f"{INTERNAL_URL}/artificial-analysis-benchmarks",
+            params={"slug": canonical_slug},
+            headers=OR_HEADERS,
+            timeout=12,
+        )
+        data = resp.json().get("data", []) if resp.status_code == 200 else []
+        if not data:
+            return None
+        rec = data[0]
+        evals = (rec.get("benchmark_data") or {}).get("evaluations") or {}
+        pcts = rec.get("percentiles") or {}
+        out = {
+            "intelligence": evals.get("artificial_analysis_intelligence_index"),
+            "coding": evals.get("artificial_analysis_coding_index"),
+            "agentic": evals.get("artificial_analysis_agentic_index"),
+            "gpqa": evals.get("gpqa"),
+            "hle": evals.get("hle"),
+            "scicode": evals.get("scicode"),
+            "tau2": evals.get("tau2"),
+            "intelligence_pct": pcts.get("intelligence_percentile"),
+            "coding_pct": pcts.get("coding_percentile"),
+            "agentic_pct": pcts.get("agentic_percentile"),
+        }
+        # Drop all-null records
+        return out if any(v is not None for v in out.values()) else None
+    except Exception:
+        return None
 
-    best_throughput = 0
-    best_latency = float('inf')
-    providers = set()
 
-    for ep in endpoints_list:
-        provider = ep.get("provider_name", "Unknown")
-        providers.add(provider)
-
-        throughput_data = ep.get("throughput_last_30m") or {}
-        tp = throughput_data.get("p50") or 0
-
-        latency_data = ep.get("latency_last_30m") or {}
-        lat = latency_data.get("p50") or float('inf')
-
-        if tp > best_throughput:
-            best_throughput = tp
-        if lat < best_latency:
-            best_latency = lat
-
-    return {
-        "throughput": round(best_throughput, 2),
-        "latency": round(best_latency, 2) if best_latency != float('inf') else None,
-        "providers": list(providers)
-    }
+def get_da_benchmark(canonical_slug):
+    """Design Arena Elo (UI/code generation) via OpenRouter's internal API."""
+    try:
+        resp = requests.get(
+            f"{INTERNAL_URL}/design-arena-benchmarks",
+            params={"slug": canonical_slug},
+            headers=OR_HEADERS,
+            timeout=12,
+        )
+        recs = (resp.json().get("data") or {}).get("records", []) if resp.status_code == 200 else []
+        if not recs:
+            return None
+        best = max(recs, key=lambda x: x.get("elo") or 0)
+        return {
+            "elo": best.get("elo"),
+            "category": best.get("category"),
+            "win_rate": best.get("win_rate"),
+            "elo_pct": best.get("elo_percentile"),
+            "tournaments": best.get("total_tournaments"),
+            "categories": {
+                x["category"]: {"elo": x.get("elo"), "win_rate": x.get("win_rate")}
+                for x in recs if x.get("category")
+            },
+        }
+    except Exception:
+        return None
 
 
 def get_price(model):
-    """Extract pricing info"""
+    """Extract pricing info ($/1M tokens), including prompt-cache read price if present."""
     pricing = model.get("pricing", {})
-    try:
-        prompt = float(pricing.get("prompt", "0")) * 1_000_000
-        completion = float(pricing.get("completion", "0")) * 1_000_000
-        return {"input": round(prompt, 4), "output": round(completion, 4)}
-    except:
-        return {"input": None, "output": None}
 
-
-def extract_provider_details(endpoints_data):
-    """Extract per-provider details from endpoints"""
-    endpoints_list = endpoints_data.get("endpoints", []) if endpoints_data else []
-    provider_details = []
-
-    for ep in endpoints_list:
-        pricing = ep.get("pricing", {})
-        latency_data = ep.get("latency_last_30m") or {}
-        throughput_data = ep.get("throughput_last_30m") or {}
-
+    def per_m(key):
         try:
-            price_in = float(pricing.get("prompt", "0")) * 1_000_000
-            price_out = float(pricing.get("completion", "0")) * 1_000_000
-        except:
-            price_in = None
-            price_out = None
+            v = pricing.get(key)
+            return round(float(v) * 1_000_000, 4) if v not in (None, "") else None
+        except (TypeError, ValueError):
+            return None
 
-        lat = latency_data.get("p50")
-        tp = throughput_data.get("p50")
+    return {
+        "input": per_m("prompt"),
+        "output": per_m("completion"),
+        "cache_read": per_m("input_cache_read"),
+        "cache_write": per_m("input_cache_write"),
+    }
+
+
+# Capabilities derived from a model's supported_parameters list.
+def extract_capabilities(model):
+    params = set(model.get("supported_parameters") or [])
+    arch = model.get("architecture", {})
+    inputs = set(arch.get("input_modalities") or ["text"])
+    outputs = set(arch.get("output_modalities") or ["text"])
+    return {
+        "tools": "tools" in params or "tool_choice" in params,
+        "reasoning": "reasoning" in params or "include_reasoning" in params,
+        "structured": "structured_outputs" in params or "response_format" in params,
+        "vision": "image" in inputs,
+        "audio_in": "audio" in inputs,
+        "image_out": "image" in outputs,
+    }
+
+
+def get_provider_details(model_id):
+    """Per-provider details (uptime, caching, quantization, pricing) from the
+    official endpoints API. Live throughput/latency come from get_perf()."""
+    try:
+        resp = requests.get(
+            f"{BASE_URL}/models/{model_id}/endpoints",
+            headers=OR_HEADERS, timeout=12,
+        )
+        if resp.status_code != 200:
+            return [], False
+    except Exception:
+        return [], False
+
+    endpoints = (resp.json().get("data") or {}).get("endpoints", [])
+    details = []
+    any_cache = False
+    for ep in endpoints:
+        pricing = ep.get("pricing", {})
+
+        def per_m(key):
+            try:
+                v = pricing.get(key)
+                return round(float(v) * 1_000_000, 4) if v not in (None, "") else None
+            except (TypeError, ValueError):
+                return None
+
         uptime = ep.get("uptime_last_30m")
-
-        provider_details.append({
+        caching = bool(ep.get("supports_implicit_caching"))
+        any_cache = any_cache or caching
+        details.append({
             "name": ep.get("provider_name", "Unknown"),
-            "quantization": ep.get("quantization", "unknown"),
+            "quantization": ep.get("quantization") or "unknown",
             "context_length": ep.get("context_length") or 0,
             "max_completion": ep.get("max_completion_tokens"),
-            "latency": round(lat, 2) if lat is not None else None,
-            "throughput": round(tp, 2) if tp is not None else None,
-            "price_input": round(price_in, 4) if price_in is not None else None,
-            "price_output": round(price_out, 4) if price_out is not None else None,
+            "price_input": per_m("prompt"),
+            "price_output": per_m("completion"),
             "uptime": round(uptime, 1) if uptime is not None else None,
+            "caching": caching,
         })
-
-    return provider_details
+    return details, any_cache
 
 
 def enrich_model(model):
-    """Enrich a single model with endpoint data from frontend stats API"""
+    """Enrich one model: live perf + provider details + capabilities + metadata.
+
+    Benchmarks are merged separately (slower cache) by canonical_slug.
+    """
     model_id = model["id"]
-
-    # Use frontend stats API which has accurate throughput/latency
-    frontend_endpoints = get_frontend_stats(model_id)
-
-    # Extract stats and provider details from frontend data
-    best_throughput = 0
-    best_latency = float('inf')
-    providers = set()
-    provider_details = []
-
-    for ep in frontend_endpoints:
-        provider = ep.get("provider_name", "Unknown")
-        providers.add(provider)
-
-        stats = ep.get("stats") or {}
-        pricing = ep.get("pricing") or {}
-
-        tp = stats.get("p50_throughput") or 0
-        lat = stats.get("p50_latency")
-
-        if tp > best_throughput:
-            best_throughput = tp
-        if lat is not None and lat < best_latency:
-            best_latency = lat
-
-        # Extract pricing
-        try:
-            price_in = float(pricing.get("prompt", "0")) * 1_000_000
-            price_out = float(pricing.get("completion", "0")) * 1_000_000
-        except:
-            price_in = None
-            price_out = None
-
-        provider_details.append({
-            "name": provider,
-            "quantization": ep.get("quantization", "unknown"),
-            "context_length": ep.get("context_length") or 0,
-            "max_completion": ep.get("max_completion_tokens"),
-            "latency": round(lat, 2) if lat is not None else None,
-            "throughput": round(tp, 2) if tp > 0 else None,
-            "price_input": round(price_in, 4) if price_in is not None else None,
-            "price_output": round(price_out, 4) if price_out is not None else None,
-            "uptime": None,  # Not available in frontend API
-        })
-
-    # Get pricing from model data as fallback
-    price = get_price(model)
     arch = model.get("architecture", {})
+    top = model.get("top_provider") or {}
+
+    provider_details, any_cache = get_provider_details(model_id)
+    perf = get_perf(model_id) or {}
+    price = get_price(model)
+
+    providers = [p["name"] for p in provider_details]
+    best_uptime = max((p["uptime"] for p in provider_details if p["uptime"] is not None),
+                      default=None)
 
     return {
         "id": model_id,
+        "canonical_slug": model.get("canonical_slug", model_id),
         "name": model.get("name", model_id),
-        "description": model.get("description", "")[:200],
+        "description": model.get("description", "")[:240],
         "context_length": model.get("context_length", 0),
-        "throughput": round(best_throughput, 2) if best_throughput > 0 else 0,
-        "latency": round(best_latency, 2) if best_latency != float('inf') else None,
+        "max_output": top.get("max_completion_tokens"),
+        "throughput": perf.get("throughput", 0),
+        "latency": perf.get("latency"),
+        "uptime": best_uptime,
         "price_input": price["input"],
         "price_output": price["output"],
-        "providers": list(providers),
+        "price_cache_read": price["cache_read"],
+        "supports_caching": any_cache,
+        "providers": providers,
         "provider_details": provider_details,
         "modality": arch.get("modality", "text->text"),
         "input_modalities": arch.get("input_modalities", ["text"]),
         "output_modalities": arch.get("output_modalities", ["text"]),
-        "top_provider": model.get("top_provider", {}),
+        "capabilities": extract_capabilities(model),
+        "knowledge_cutoff": model.get("knowledge_cutoff"),
+        "is_moderated": top.get("is_moderated"),
+        "hugging_face_id": model.get("hugging_face_id"),
         "created": model.get("created", 0),
+        # Benchmarks filled in by merge_benchmarks(); placeholders keep shape stable.
+        "aa": None,
+        "da": None,
     }
 
 
@@ -392,28 +465,86 @@ def get_cached_fal_models(force_refresh=False):
         return cached_fal_models
 
 
+def fetch_benchmarks(slugs):
+    """Fetch AA + Design Arena benchmarks for a list of canonical slugs, in parallel."""
+    result = {}
+
+    def one(slug):
+        return slug, {"aa": get_aa_benchmark(slug), "da": get_da_benchmark(slug)}
+
+    with ThreadPoolExecutor(max_workers=40) as ex:
+        for fut in as_completed([ex.submit(one, s) for s in slugs]):
+            try:
+                slug, data = fut.result()
+                result[slug] = data
+            except Exception as e:
+                print(f"Benchmark fetch error: {e}")
+    hits = sum(1 for v in result.values() if v["aa"] or v["da"])
+    print(f"Benchmarks: {hits}/{len(slugs)} models have AA or Design Arena data")
+    return result
+
+
+def get_cached_benchmarks(slugs, force_refresh=False):
+    """Benchmarks on a slower (24h) cache than live perf/pricing."""
+    global cached_benchmarks, bench_cache_timestamp, bench_cache_loading
+
+    with bench_cache_lock:
+        now = time.time()
+        if not force_refresh and cached_benchmarks and (now - bench_cache_timestamp) < BENCH_CACHE_TTL:
+            return cached_benchmarks
+
+        if not force_refresh and os.path.exists(BENCH_CACHE_FILE):
+            try:
+                with open(BENCH_CACHE_FILE) as f:
+                    data = json.load(f)
+                if now - data.get("timestamp", 0) < BENCH_CACHE_TTL:
+                    cached_benchmarks = data["benchmarks"]
+                    bench_cache_timestamp = data["timestamp"]
+                    print(f"Loaded benchmarks for {len(cached_benchmarks)} models from cache")
+                    return cached_benchmarks
+            except Exception as e:
+                print(f"Benchmark cache load error: {e}")
+
+        bench_cache_loading = True
+        try:
+            cached_benchmarks = fetch_benchmarks(slugs)
+            bench_cache_timestamp = now
+            try:
+                with open(BENCH_CACHE_FILE, "w") as f:
+                    json.dump({"timestamp": now, "benchmarks": cached_benchmarks}, f)
+            except Exception as e:
+                print(f"Benchmark cache save error: {e}")
+        finally:
+            bench_cache_loading = False
+        return cached_benchmarks
+
+
+def merge_benchmarks(enriched, benchmarks):
+    """Attach cached benchmark records onto enriched models by canonical_slug."""
+    for m in enriched:
+        b = benchmarks.get(m["canonical_slug"])
+        if b:
+            m["aa"] = b.get("aa")
+            m["da"] = b.get("da")
+    return enriched
+
+
 def fetch_all_data():
-    """Fetch and enrich all models"""
+    """Fetch and enrich all models (live perf + providers + metadata), then merge benchmarks."""
     print("Fetching models list...")
     models = get_all_models()
     total = len(models)
-    print(f"Found {total} models, fetching endpoint stats...")
+    print(f"Found {total} models, fetching live perf + provider data...")
 
     enriched = []
     completed = 0
     start_time = time.time()
 
-    # Use more workers for faster fetching
     with ThreadPoolExecutor(max_workers=50) as executor:
-        future_to_model = {
-            executor.submit(enrich_model, m): m
-            for m in models
-        }
-
+        future_to_model = {executor.submit(enrich_model, m): m for m in models}
         for future in as_completed(future_to_model):
             try:
-                result = future.result()
-                enriched.append(result)
+                enriched.append(future.result())
                 completed += 1
                 if completed % 25 == 0 or completed == total:
                     elapsed = time.time() - start_time
@@ -422,6 +553,11 @@ def fetch_all_data():
                     print(f"  Progress: {completed}/{total} ({rate:.1f}/s, ETA: {eta:.0f}s)")
             except Exception as e:
                 print(f"Error enriching model: {e}")
+
+    # Merge benchmarks (own 24h cache, keyed by canonical_slug)
+    slugs = sorted({m["canonical_slug"] for m in enriched})
+    benchmarks = get_cached_benchmarks(slugs)
+    merge_benchmarks(enriched, benchmarks)
 
     elapsed = time.time() - start_time
     print(f"Enriched {len(enriched)} models in {elapsed:.1f}s")
@@ -694,14 +830,22 @@ class APIHandler(SimpleHTTPRequestHandler):
             self.send_json({"loading": True, "total_models": 0})
             return
 
+        def has_cap(m, cap):
+            return (m.get("capabilities") or {}).get(cap)
+
         stats = {
             "loading": cache_loading,
             "total_models": len(models),
             "with_throughput": len([m for m in models if m["throughput"] > 0]),
             "with_latency": len([m for m in models if m["latency"]]),
+            "with_benchmarks": len([m for m in models if m.get("aa") or m.get("da")]),
+            "with_intelligence": len([m for m in models if (m.get("aa") or {}).get("intelligence") is not None]),
+            "with_tools": len([m for m in models if has_cap(m, "tools")]),
+            "with_reasoning": len([m for m in models if has_cap(m, "reasoning")]),
             "providers": list(set(p for m in models for p in m["providers"])),
             "modalities": list(set(m["modality"] for m in models)),
             "max_context": max((m["context_length"] or 0) for m in models) if models else 0,
+            "bench_loading": bench_cache_loading,
         }
 
         self.send_json(stats)
