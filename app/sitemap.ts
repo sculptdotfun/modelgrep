@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getCatalog } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/collections";
+import { BLOG_POSTS } from "@/lib/blog";
 
 export const revalidate = 3600;
 
@@ -42,10 +43,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  const blogUrls: MetadataRoute.Sitemap = [
+    { url: `${BASE}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    ...BLOG_POSTS.map((p) => ({
+      url: `${BASE}/blog/${p.slug}`,
+      lastModified: new Date(p.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+  ];
+
   return [
     { url: BASE, lastModified: now, changeFrequency: "hourly", priority: 1 },
     ...collectionUrls,
     ...modelUrls,
     ...compareUrls,
+    ...blogUrls,
   ];
 }

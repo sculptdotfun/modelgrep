@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { Model } from "./types";
+import type { LiteModel } from "./types";
 
 export type SortKey =
   | "intelligence"
@@ -101,7 +101,7 @@ export const useFilters = create<FilterState>((set) => ({
 
 // Pure selector: apply current filters to a catalog. Kept here so the table and
 // any header counts share one definition.
-export function selectModels(models: Model[], f: FilterState): Model[] {
+export function selectModels(models: LiteModel[], f: FilterState): LiteModel[] {
   const terms = f.query.toLowerCase().split(/\s+/).filter(Boolean);
 
   const filtered = models.filter((m) => {
@@ -121,7 +121,7 @@ export function selectModels(models: Model[], f: FilterState): Model[] {
     return true;
   });
 
-  const val = (m: Model): number | null => {
+  const val = (m: LiteModel): number | null => {
     switch (f.sortKey) {
       case "intelligence":
         return m.aa?.intelligence ?? null;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import type { Model } from "@/lib/types";
+import type { LiteModel } from "@/lib/types";
 import { useFilters } from "@/lib/store";
 import { SidebarContent } from "./Sidebar";
 import { ModelTable } from "./ModelTable";
@@ -45,7 +45,7 @@ export function Dashboard({
   providers,
   stats,
 }: {
-  models: Model[];
+  models: LiteModel[];
   providers: string[];
   stats: { models: number; providers: number; benchmarked: number };
 }) {

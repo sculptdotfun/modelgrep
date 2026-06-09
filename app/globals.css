@@ -1,16 +1,15 @@
 @import "tailwindcss";
 
-/* modelgrep — light, high-contrast utility theme driven by semantic tokens.
-   Swap these values (or add a [data-theme=dark] block) to re-theme everything. */
+/* modelgrep — light, high-contrast utility theme driven by semantic tokens. */
 @theme {
   --color-canvas: #f7f8fa;
   --color-surface: #ffffff;
   --color-surface-2: #f2f3f6;
   --color-line: #ebecf0;
   --color-line-strong: #dcdee4;
-  --color-ink: #16161d;
-  --color-ink-2: #51535e;
-  --color-ink-3: #8a8c97;
+  --color-ink: #15151c;
+  --color-ink-2: #50525e;
+  --color-ink-3: #8b8d99;
   --color-brand: #5b3df5;
   --color-brand-ink: #4a2fe0;
 
@@ -22,6 +21,7 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, "JetBrains Mono", monospace;
+  --font-display: var(--font-display), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 :root {
@@ -38,6 +38,10 @@ body {
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(91, 61, 245, 0.16);
 }
 
 ::-webkit-scrollbar {
@@ -64,6 +68,11 @@ body {
   font-family: var(--font-mono), ui-monospace, "JetBrains Mono", monospace;
 }
 
+.font-display {
+  font-family: var(--font-display), var(--font-inter), ui-sans-serif, sans-serif;
+  letter-spacing: -0.02em;
+}
+
 /* Soft elevation for cards. */
 .card-shadow {
   box-shadow:
@@ -71,10 +80,135 @@ body {
     0 4px 12px -4px rgba(16, 18, 28, 0.06);
 }
 
-/* Faint dotted texture for the hero band. */
+/* Slightly stronger elevation on hover — for interactive cards. */
+.card-lift {
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.card-lift:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 2px 4px rgba(16, 18, 28, 0.04),
+    0 10px 24px -8px rgba(16, 18, 28, 0.1);
+}
+
+/* Faint dotted texture for hero bands. */
 .dot-texture {
   background-image: radial-gradient(rgba(91, 61, 245, 0.06) 1px, transparent 1px);
   background-size: 22px 22px;
+}
+
+/* Brand gradient for display-type accents. */
+.text-gradient {
+  background: linear-gradient(92deg, #5b3df5 0%, #9333ea 60%, #d946ef 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(91, 61, 245, 0.55);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Article typography for migrated blog content (raw HTML bodies). */
+.prose-mg {
+  color: var(--color-ink-2);
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+.prose-mg h2 {
+  font-family: var(--font-display), var(--font-inter), sans-serif;
+  color: var(--color-ink);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 2em 0 0.6em;
+}
+.prose-mg h3 {
+  color: var(--color-ink);
+  font-size: 17px;
+  font-weight: 650;
+  margin: 1.5em 0 0.5em;
+}
+.prose-mg p {
+  margin: 0.9em 0;
+}
+.prose-mg strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-mg ul,
+.prose-mg ol {
+  margin: 0.9em 0;
+  padding-left: 1.4em;
+}
+.prose-mg ul {
+  list-style: disc;
+}
+.prose-mg ol {
+  list-style: decimal;
+}
+.prose-mg li {
+  margin: 0.45em 0;
+}
+.prose-mg a {
+  color: var(--color-brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-mg table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 14px;
+}
+.prose-mg th,
+.prose-mg td {
+  border: 1px solid var(--color-line);
+  padding: 8px 12px;
+  text-align: left;
+}
+.prose-mg th {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-mg code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.9em;
+  background: var(--color-surface-2);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.prose-mg .cta-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 1.6em 0;
+  box-shadow:
+    0 1px 2px rgba(16, 18, 28, 0.03),
+    0 4px 12px -4px rgba(16, 18, 28, 0.06);
+}
+.prose-mg .cta-box p {
+  margin: 0 0 10px;
+}
+.prose-mg .cta-btn {
+  display: inline-block;
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 550;
+  border-radius: 10px;
+  padding: 8px 14px;
+  text-decoration: none;
+}
+.prose-mg .cta-btn:hover {
+  opacity: 0.9;
 }
 
 @keyframes fadeUp {
@@ -89,4 +223,17 @@ body {
 }
 .animate-fade-up {
   animation: fadeUp 0.18s ease-out;
+}
+
+@keyframes growBar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.animate-grow {
+  transform-origin: left center;
+  animation: growBar 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }

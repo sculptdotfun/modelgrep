@@ -12,7 +12,26 @@ import {
   fetchRawModels,
   pool,
 } from "./openrouter";
-import type { Model, ModelDetail } from "./types";
+import type { LiteModel, Model, ModelDetail } from "./types";
+
+// Strip a catalog Model down to what client components actually render.
+export function toLite(m: Model): LiteModel {
+  return {
+    id: m.id,
+    name: m.name,
+    context_length: m.context_length,
+    throughput: m.throughput,
+    latency: m.latency,
+    price_input: m.price_input,
+    price_output: m.price_output,
+    providers: m.providers,
+    capabilities: m.capabilities,
+    aa: m.aa
+      ? { intelligence: m.aa.intelligence, intelligence_pct: m.aa.intelligence_pct, coding: m.aa.coding }
+      : null,
+    da: m.da ? { elo: m.da.elo, category: m.da.category } : null,
+  };
+}
 
 const CONCURRENCY = 24;
 

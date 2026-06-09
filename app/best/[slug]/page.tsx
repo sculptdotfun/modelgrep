@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getCatalog } from "@/lib/catalog";
 import { COLLECTIONS, getCollection } from "@/lib/collections";
 import { Footer } from "@/components/Footer";
+import { SiteHeader } from "@/components/SiteHeader";
 import { CapBadges, OwnerAvatar } from "@/components/ui";
 import { fmtContext, fmtPrice, modelOwner } from "@/lib/format";
 
@@ -50,9 +51,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto w-full max-w-[860px] px-5 py-7">
-        <Link href="/" className="font-mono text-[15px] font-bold tracking-tight text-ink">
-          model<span className="text-brand">grep</span>
-        </Link>
+        <SiteHeader />
 
         <nav className="mt-5 text-xs text-ink-3">
           <Link href="/" className="hover:text-ink-2">
@@ -62,7 +61,7 @@ export default async function CollectionPage({ params }: { params: Promise<Param
           <span className="text-ink">{c.title}</span>
         </nav>
 
-        <h1 className="mt-4 text-[28px] font-bold tracking-tight text-ink sm:text-[32px]">{c.title}</h1>
+        <h1 className="font-display mt-4 text-[30px] font-bold text-ink sm:text-[34px]">{c.title}</h1>
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-2">{c.blurb}</p>
 
         <ol className="card-shadow mt-7 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">

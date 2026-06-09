@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { getCatalog } from "@/lib/catalog";
+import { getCatalog, toLite } from "@/lib/catalog";
 import { fetchProviderCount } from "@/lib/openrouter";
 import { Dashboard } from "@/components/Dashboard";
 import { Footer } from "@/components/Footer";
+import { SiteHeader } from "@/components/SiteHeader";
 import { TopChart } from "@/components/TopChart";
 import { COLLECTIONS } from "@/lib/collections";
 
@@ -11,7 +12,7 @@ export const revalidate = 3600;
 function StatPill({ value, label }: { value: string | number; label: string }) {
   return (
     <div className="flex items-baseline gap-1.5">
-      <span className="text-lg font-bold tracking-tight text-ink">{value}</span>
+      <span className="font-display text-xl font-bold text-ink">{value}</span>
       <span className="text-[13px] text-ink-3">{label}</span>
     </div>
   );
@@ -21,6 +22,7 @@ export default async function Home() {
   const [models, providerCount] = await Promise.all([getCatalog(), fetchProviderCount()]);
   const benchmarked = models.filter((m) => m.aa || m.da).length;
   const stats = { models: models.length, providers: providerCount, benchmarked };
+  const lite = models.map(toLite);
 
   const top = models
     .filter((m) => m.aa?.intelligence != null)
@@ -44,23 +46,21 @@ export default async function Home() {
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <section className="dot-texture border-b border-line">
-        <div className="mx-auto w-full max-w-[1320px] px-5 pb-9 pt-7">
-          <span className="font-mono text-[15px] font-bold tracking-tight text-ink">
-            model<span className="text-brand">grep</span>
-          </span>
+        <div className="mx-auto w-full max-w-[1320px] px-5 pb-9 pt-6">
+          <SiteHeader />
         </div>
-        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-8 px-5 pb-10 lg:grid-cols-[1fr_minmax(0,480px)]">
+        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-8 px-5 pb-12 lg:grid-cols-[1fr_minmax(0,480px)]">
           <div>
-            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] font-medium text-ink-2">
+            <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] font-medium text-ink-2">
               <span className="size-1.5 animate-pulse rounded-full bg-elite" />
               Live benchmarks · updated hourly
             </div>
-            <h1 className="text-[32px] font-bold leading-[1.1] tracking-tight text-ink sm:text-[40px]">
+            <h1 className="font-display text-[36px] font-bold leading-[1.04] text-ink sm:text-[46px]">
               Find &amp; understand
               <br />
-              every LLM.
+              <span className="text-gradient">every LLM.</span>
             </h1>
-            <p className="mt-3 max-w-md text-[15px] leading-relaxed text-ink-2">
+            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-2">
               The leaderboard for AI models — ranked by real intelligence benchmarks, speed, and price.
               Compare, filter, and dig into any model.
             </p>
@@ -82,12 +82,12 @@ export default async function Home() {
             </div>
           </div>
 
-          <TopChart models={models} />
+          <TopChart models={lite} />
         </div>
       </section>
 
       <div className="pt-5">
-        <Dashboard models={models} providers={[]} stats={stats} />
+        <Dashboard models={lite} providers={[]} stats={stats} />
       </div>
 
       <Footer />

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import type { Model } from "@/lib/types";
+import type { LiteModel } from "@/lib/types";
 import { ownerColor } from "@/lib/owners";
 import { fmtPrice, fmtThroughput, modelOwner } from "@/lib/format";
 
@@ -16,7 +16,7 @@ const METRICS: { key: MetricKey; label: string }[] = [
   { key: "throughput", label: "Speed" },
 ];
 
-function metricValue(m: Model, k: MetricKey): number | null {
+function metricValue(m: LiteModel, k: MetricKey): number | null {
   switch (k) {
     case "intelligence":
       return m.aa?.intelligence ?? null;
@@ -29,7 +29,7 @@ function metricValue(m: Model, k: MetricKey): number | null {
   }
 }
 
-function display(m: Model, k: MetricKey): string {
+function display(m: LiteModel, k: MetricKey): string {
   const v = metricValue(m, k);
   if (v == null) return "—";
   if (k === "throughput") return `${fmtThroughput(v)} t/s`;
@@ -37,14 +37,14 @@ function display(m: Model, k: MetricKey): string {
   return v.toFixed(1);
 }
 
-export function TopChart({ models }: { models: Model[] }) {
+export function TopChart({ models }: { models: LiteModel[] }) {
   const router = useRouter();
   const [metric, setMetric] = useState<MetricKey>("intelligence");
 
   const { rows, max } = useMemo(() => {
     const ranked = models
       .map((m) => ({ m, v: metricValue(m, metric) }))
-      .filter((r): r is { m: Model; v: number } => r.v != null)
+      .filter((r): r is { m: LiteModel; v: number } => r.v != null)
       .sort((a, b) => b.v - a.v)
       .slice(0, 10);
     const max = ranked[0]?.v ?? 1;
@@ -58,7 +58,7 @@ export function TopChart({ models }: { models: Model[] }) {
   return (
     <div className="card-shadow rounded-2xl border border-line bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-[13px] font-semibold text-ink">Top models</h2>
+        <h2 className="font-display text-[14px] font-bold text-ink">Top models</h2>
         <div className="flex gap-0.5 rounded-lg bg-surface-2 p-0.5">
           {METRICS.map((mt) => (
             <button
@@ -93,7 +93,8 @@ export function TopChart({ models }: { models: Model[] }) {
               </span>
               <span className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-surface-2">
                 <span
-                  className="absolute inset-y-0 left-0 rounded-full transition-all"
+                  key={metric}
+                  className="animate-grow absolute inset-y-0 left-0 rounded-full"
                   style={{ width: `${Math.max(3, w)}%`, background: oc, opacity: 0.85 }}
                 />
               </span>

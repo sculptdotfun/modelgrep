@@ -78,3 +78,20 @@ export interface Model {
 export interface ModelDetail extends Model {
   provider_details: ProviderDetail[];
 }
+
+// Slim shape shipped to client components (leaderboard table, charts).
+// Model is structurally assignable to LiteModel, but converting via toLite()
+// strips descriptions/benchmark detail and keeps the RSC payload small.
+export interface LiteModel {
+  id: string;
+  name: string;
+  context_length: number;
+  throughput: number;
+  latency: number | null;
+  price_input: number | null;
+  price_output: number | null;
+  providers: string[];
+  capabilities: Capabilities;
+  aa: { intelligence: number | null; intelligence_pct: number | null; coding: number | null } | null;
+  da: { elo: number | null; category: string | null } | null;
+}

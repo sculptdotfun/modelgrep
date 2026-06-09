@@ -137,7 +137,7 @@ export function StatCard({
   return (
     <div className="card-shadow rounded-xl border border-line bg-surface p-3.5">
       <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-3">{label}</div>
-      <div className={clsx("mt-1 text-[26px] font-semibold leading-none tracking-tight", accent ?? "text-ink")}>
+      <div className={clsx("font-display mt-1 text-[26px] font-bold leading-none", accent ?? "text-ink")}>
         {value}
       </div>
       {sub && <div className="mt-1.5 truncate font-mono text-[11px] text-ink-3">{sub}</div>}

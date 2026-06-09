@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import clsx from "clsx";
-import type { Model } from "@/lib/types";
+import type { LiteModel } from "@/lib/types";
 import { type SortKey, selectModels, useFilters } from "@/lib/store";
 import { ownerColor } from "@/lib/owners";
 import {
@@ -77,7 +77,7 @@ function SortHeader({ col, alwaysRight = true }: { col: Col; alwaysRight?: boole
 // number cell helpers — neutral ink hierarchy, color reserved for real signal.
 const NUM = "font-mono text-[13px] tabular-nums";
 
-function Row({ m, rank }: { m: Model; rank: number }) {
+function Row({ m, rank }: { m: LiteModel; rank: number }) {
   const router = useRouter();
   const href = `/models/${m.id}`;
   const owner = modelOwner(m.id);
@@ -151,13 +151,18 @@ function Row({ m, rank }: { m: Model; rank: number }) {
   );
 }
 
-export function ModelTable({ models }: { models: Model[] }) {
+// Rows rendered before "Show all" — keeps SSR HTML and hydration light.
+const INITIAL_ROWS = 60;
+
+export function ModelTable({ models }: { models: LiteModel[] }) {
   const filters = useFilters();
+  const [showAll, setShowAll] = useState(false);
   const rows = useMemo(() => selectModels(models, filters), [models, filters]);
+  const visible = showAll ? rows : rows.slice(0, INITIAL_ROWS);
 
   return (
-    <div className="card-shadow rounded-xl border border-line bg-surface">
-      <div className="flex items-center justify-between rounded-t-xl border-b border-line px-4 py-2.5 text-xs text-ink-2">
+    <div className="card-shadow rounded-2xl border border-line bg-surface">
+      <div className="flex items-center justify-between rounded-t-2xl border-b border-line px-4 py-2.5 text-xs text-ink-2">
         <span>
           <strong className="text-ink">{rows.length}</strong> models
         </span>
@@ -191,12 +196,20 @@ export function ModelTable({ models }: { models: Model[] }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((m, i) => (
+            {visible.map((m, i) => (
               <Row key={m.id} m={m} rank={i + 1} />
             ))}
           </tbody>
         </table>
         {rows.length === 0 && <div className="py-16 text-center text-sm text-ink-3">No models match your filters.</div>}
+        {!showAll && rows.length > INITIAL_ROWS && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="block w-full border-t border-line py-3 text-center text-[13px] font-medium text-brand-ink transition-colors hover:bg-surface-2/60"
+          >
+            Show all {rows.length} models
+          </button>
+        )}
       </div>
     </div>
   );

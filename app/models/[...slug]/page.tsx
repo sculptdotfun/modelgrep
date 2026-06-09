@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import clsx from "clsx";
 import { getCatalog, getModelDetail } from "@/lib/catalog";
 import { Footer } from "@/components/Footer";
+import { SiteHeader } from "@/components/SiteHeader";
 import { CapBadges, Metric, OwnerAvatar } from "@/components/ui";
 import { ownerColor } from "@/lib/owners";
 import {
@@ -117,7 +118,7 @@ function Kpi({ label, value, tier, sub }: { label: string; value: string; tier?:
   return (
     <div className="card-shadow rounded-xl border border-line bg-surface p-3.5">
       <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-3">{label}</div>
-      <div className={clsx("mt-1 text-[24px] font-bold leading-none tracking-tight", tier ? tierColor[tier] : "text-ink")}>{value}</div>
+      <div className={clsx("font-display mt-1 text-[24px] font-bold leading-none", tier ? tierColor[tier] : "text-ink")}>{value}</div>
       {sub && <div className="mt-1.5 text-[11px] text-ink-3">{sub}</div>}
     </div>
   );
@@ -188,31 +189,33 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
 
   const url = `https://modelgrep.com/models/${m.id}`;
   const owner = modelOwner(m.id);
+  // "Anthropic: Claude Opus 4.8" → "Claude Opus 4.8" for prose/FAQ copy
+  const shortName = m.name.includes(": ") ? m.name.split(": ").slice(1).join(": ") : m.name;
 
   // FAQ derived from the model's data — adds indexable long-tail content and
   // FAQ rich-result eligibility.
   const faqs: { q: string; a: string }[] = [];
   if (m.price_input != null) {
     faqs.push({
-      q: `How much does ${m.name} cost?`,
-      a: `${m.name} costs ${m.price_input === 0 ? "nothing (free tier)" : `${fmtPrice(m.price_input)} per million input tokens`}${m.price_output != null && m.price_input > 0 ? ` and ${fmtPrice(m.price_output)} per million output tokens` : ""} via OpenRouter${priceRank ? `, making it ${ordinal(priceRank.rank)} cheapest of ${priceRank.total} paid models` : ""}.`,
+      q: `How much does ${shortName} cost?`,
+      a: `${shortName} costs ${m.price_input === 0 ? "nothing (free tier)" : `${fmtPrice(m.price_input)} per million input tokens`}${m.price_output != null && m.price_input > 0 ? ` and ${fmtPrice(m.price_output)} per million output tokens` : ""} via OpenRouter${priceRank ? `, making it ${ordinal(priceRank.rank)} cheapest of ${priceRank.total} paid models` : ""}.`,
     });
   }
   if (aa?.intelligence != null) {
     faqs.push({
-      q: `How smart is ${m.name}?`,
-      a: `${m.name} scores ${aa.intelligence.toFixed(1)} on the Artificial Analysis Intelligence Index${intelRank ? `, ranking ${ordinal(intelRank.rank)} of ${intelRank.total} benchmarked models` : ""}${aa.gpqa != null ? `, with a GPQA Diamond score of ${pct(aa.gpqa, 0)}` : ""}.`,
+      q: `How smart is ${shortName}?`,
+      a: `${shortName} scores ${aa.intelligence.toFixed(1)} on the Artificial Analysis Intelligence Index${intelRank ? `, ranking ${ordinal(intelRank.rank)} of ${intelRank.total} benchmarked models` : ""}${aa.gpqa != null ? `, with a GPQA Diamond score of ${pct(aa.gpqa, 0)}` : ""}.`,
     });
   }
   if (m.throughput || m.latency != null) {
     faqs.push({
-      q: `How fast is ${m.name}?`,
-      a: `${m.name} generates around ${m.throughput ? `${fmtThroughput(m.throughput)} tokens per second` : "—"}${m.latency != null ? ` with ${fmtLatency(m.latency)} time-to-first-token (p50)` : ""}${speedRank ? `, the ${ordinal(speedRank.rank)} fastest tracked model` : ""}.`,
+      q: `How fast is ${shortName}?`,
+      a: `${shortName} generates around ${m.throughput ? `${fmtThroughput(m.throughput)} tokens per second` : "—"}${m.latency != null ? ` with ${fmtLatency(m.latency)} time-to-first-token (p50)` : ""}${speedRank ? `, the ${ordinal(speedRank.rank)} fastest tracked model` : ""}.`,
     });
   }
   faqs.push({
-    q: `What is ${m.name}'s context window?`,
-    a: `${m.name} supports a ${fmtContext(m.context_length)}-token context window${m.max_output ? ` and can output up to ${fmtContext(m.max_output)} tokens` : ""}. It accepts ${m.input_modalities.join(", ")} input.`,
+    q: `What is ${shortName}'s context window?`,
+    a: `${shortName} supports a ${fmtContext(m.context_length)}-token context window${m.max_output ? ` and can output up to ${fmtContext(m.max_output)} tokens` : ""}. It accepts ${m.input_modalities.join(", ")} input.`,
   });
 
   const jsonLd = [
@@ -263,9 +266,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="mx-auto w-full max-w-[1320px] px-5 py-7">
-        <Link href="/" className="font-mono text-[15px] font-bold tracking-tight text-ink">
-          model<span className="text-brand">grep</span>
-        </Link>
+        <SiteHeader />
         <nav className="mb-5 mt-6 text-xs text-ink-3">
           <Link href="/" className="hover:text-ink-2">
             models
@@ -450,7 +451,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
         </Section>
 
         {faqs.length > 0 && (
-          <Section title={`${m.name} FAQ`}>
+          <Section title={`${shortName} FAQ`}>
             <div className="card-shadow divide-y divide-line rounded-xl border border-line bg-surface">
               {faqs.map((f) => (
                 <div key={f.q} className="px-4 py-3.5">
@@ -471,7 +472,7 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
                   <Link
                     key={s.id}
                     href={`/models/${s.id}`}
-                    className="card-shadow group rounded-xl border border-line bg-surface p-3.5 transition-colors hover:border-line-strong"
+                    className="card-shadow card-lift group rounded-xl border border-line bg-surface p-3.5"
                   >
                     <div className="flex items-center gap-2">
                       <span className="size-2 shrink-0 rounded-full" style={{ background: soc }} />
