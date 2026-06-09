@@ -492,6 +492,22 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
             </div>
           </Section>
         )}
+
+        {similar.length > 0 && (
+          <Section title="Compare head-to-head">
+            <div className="flex flex-wrap gap-2">
+              {similar.slice(0, 6).map((s) => (
+                <Link
+                  key={s.id}
+                  href={`/compare/${[m.id, s.id].sort().join("/vs/")}`}
+                  className="rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-2 hover:text-brand-ink"
+                >
+                  {m.name} vs {s.name}
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
       </div>
 
       <Footer />

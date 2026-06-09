@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { getCatalog } from "@/lib/catalog";
 import { fetchProviderCount } from "@/lib/openrouter";
 import { Dashboard } from "@/components/Dashboard";
 import { Footer } from "@/components/Footer";
 import { TopChart } from "@/components/TopChart";
+import { COLLECTIONS } from "@/lib/collections";
 
 export const revalidate = 3600;
 
@@ -66,6 +68,17 @@ export default async function Home() {
               <StatPill value={stats.models} label="models" />
               <StatPill value={stats.providers} label="providers" />
               <StatPill value={stats.benchmarked} label="benchmarked" />
+            </div>
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {COLLECTIONS.slice(0, 6).map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/best/${c.slug}`}
+                  className="rounded-full border border-line bg-surface px-2.5 py-1 text-[12px] text-ink-2 transition-colors hover:text-brand-ink"
+                >
+                  {c.title}
+                </Link>
+              ))}
             </div>
           </div>
 
