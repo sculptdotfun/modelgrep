@@ -31,7 +31,7 @@ export function SiteHeader() {
         <Link href="/new" className="transition-colors hover:text-ink">
           New
         </Link>
-        <Link href="/best/smartest" className="transition-colors hover:text-ink">
+        <Link href="/best" className="transition-colors hover:text-ink">
           Rankings
         </Link>
         <Link href="/blog" className="transition-colors hover:text-ink">

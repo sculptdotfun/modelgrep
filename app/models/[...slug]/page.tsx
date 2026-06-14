@@ -466,7 +466,14 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
         )}
 
         {similar.length > 0 && (
-          <Section title={baseIntel != null ? "Similar models" : `More from ${modelOwner(m.id)}`}>
+          <Section
+            title={baseIntel != null ? "Similar models" : `More from ${modelOwner(m.id)}`}
+            aside={
+              <Link href={`/alternatives/${m.id}`} className="text-[11px] font-medium text-brand-ink hover:underline">
+                All {shortName} alternatives →
+              </Link>
+            }
+          >
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {similar.map((s) => {
                 const soc = ownerColor(modelOwner(s.id));
