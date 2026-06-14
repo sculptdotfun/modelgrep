@@ -33,7 +33,9 @@ export function toLite(m: Model): LiteModel {
   };
 }
 
-const CONCURRENCY = 24;
+// Gentler than before — a smaller burst is far less likely to trip the
+// rate-limiting / bot-protection on OpenRouter's internal & RSC endpoints.
+const CONCURRENCY = 10;
 
 async function buildCatalog(): Promise<Model[]> {
   const raw = await fetchRawModels();
@@ -62,6 +64,21 @@ async function buildCatalog(): Promise<Model[]> {
       m.aa = b.aa;
       m.da = b.da;
     }
+  }
+
+  // If the base model list came through fine but EVERY enrichment call (perf +
+  // benchmarks) failed, OpenRouter's internal/RSC endpoints are being blocked
+  // or rate-limited. Caching this snapshot would bake in an empty leaderboard
+  // and 404 every benchmark-ranked page. Throw instead — at runtime that makes
+  // ISR keep serving the last good data and retry, rather than poisoning the
+  // cache. (Skipped during the build so a transient hiccup can't block a deploy.)
+  const isBuild = process.env.NEXT_PHASE === "phase-production-build";
+  const benchmarked = models.filter((m) => m.aa || m.da).length;
+  const withPerf = models.filter((m) => m.throughput > 0).length;
+  if (!isBuild && models.length >= 20 && benchmarked === 0 && withPerf === 0) {
+    throw new Error(
+      `catalog degraded: 0 benchmarked / 0 perf across ${models.length} models — upstream enrichment blocked; not caching`,
+    );
   }
 
   return models;
