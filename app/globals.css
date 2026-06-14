@@ -8,33 +8,31 @@
   --color-surface-2: #f5f5f7;
   --color-line: #ececef;
   --color-line-strong: #dcdce1;
-  --color-ink: #0b0b0f;
-  --color-ink-2: #54545f;
-  --color-ink-3: #8d8d99;
-  --color-brand: #6d4aff;
-  --color-brand-ink: #5a32f0;
-  --color-brand-soft: #eee9ff;
+  --color-ink: #0a0a0a;
+  --color-ink-2: #4d4d52;
+  --color-ink-3: #8a8a90;
+  /* monochrome system — "brand" is just ink, used sparingly for emphasis */
+  --color-brand: #0a0a0a;
+  --color-brand-ink: #0a0a0a;
+  --color-brand-soft: #f4f4f5;
 
-  /* metric tiers tuned for white backgrounds */
-  --color-elite: #059669;
-  --color-high: #4f46e5;
-  --color-mid: #d97706;
-  --color-low: #e11d48;
+  /* metric tiers — muted, functional (data only, not decoration) */
+  --color-elite: #047857;
+  --color-high: #3730a3;
+  --color-mid: #92600a;
+  --color-low: #9f1239;
 
-  /* podium accents for the top of every ranking */
-  --color-gold: #d4a017;
-  --color-silver: #9ca3af;
-  --color-bronze: #b87333;
+  /* podium accents — monochrome (ink → light grey) */
+  --color-gold: #18181b;
+  --color-silver: #71717a;
+  --color-bronze: #b4b4bb;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 
-  /* soft, layered elevation — the core of the prettier surface */
-  --shadow-soft: 0 1px 2px rgba(11, 11, 15, 0.04), 0 1px 3px rgba(11, 11, 15, 0.06);
-  --shadow-lift: 0 6px 20px rgba(11, 11, 15, 0.09), 0 2px 7px rgba(11, 11, 15, 0.05);
-
-  /* signature brand gradient */
-  --grad-brand: linear-gradient(135deg, #7d5cff 0%, #6d4aff 48%, #9a5cff 100%);
+  /* crisp, restrained elevation — borders do most of the work */
+  --shadow-soft: 0 1px 2px rgba(10, 10, 10, 0.05);
+  --shadow-lift: 0 4px 16px rgba(10, 10, 10, 0.08);
 }
 
 :root {
@@ -101,9 +99,8 @@ body {
     border-color 0.18s ease;
 }
 .card-lift:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-line-strong);
-  box-shadow: var(--shadow-lift);
+  border-color: var(--color-ink-3);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Buttons — unified Geist-style primary/secondary. */
@@ -144,38 +141,33 @@ body {
   box-shadow: var(--shadow-soft);
 }
 .btn-brand {
-  background: var(--grad-brand);
+  background: var(--color-ink);
   color: #fff;
   box-shadow: var(--shadow-soft);
 }
 .btn-brand:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lift);
+  opacity: 0.9;
 }
 
-/* Signature backgrounds — dot grid + radial accent glow for heroes/sections. */
+/* Subtle dot grid for section texture; the hero stays clean (faint depth only). */
 .dot-grid {
   background-image: radial-gradient(circle, var(--color-line-strong) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background-size: 24px 24px;
 }
 .hero-glow {
-  background:
-    radial-gradient(55% 110% at 50% -8%, rgba(109, 74, 255, 0.14), transparent 60%),
-    radial-gradient(45% 90% at 88% 0%, rgba(154, 92, 255, 0.09), transparent 70%);
+  background: radial-gradient(60% 100% at 50% -10%, rgba(10, 10, 10, 0.025), transparent 62%);
 }
 .glass {
-  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
-  backdrop-filter: saturate(1.5) blur(12px);
-  -webkit-backdrop-filter: saturate(1.5) blur(12px);
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .grad-brand {
-  background: var(--grad-brand);
+  background: var(--color-ink);
 }
+/* kept as a class for compatibility — now just solid ink, no gradient text */
 .gradient-ink {
-  background: var(--grad-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-ink);
 }
 
 :focus-visible {

@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     return new ImageResponse(
       (
         <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", fontSize: 64, fontWeight: 800, fontFamily: "sans-serif", color: "#16161d" }}>
-          model<span style={{ color: "#6d4aff" }}>grep</span>
+          model<span style={{ color: "#0a0a0a" }}>grep</span>
         </div>
       ),
       SIZE,
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#ffffff", padding: "60px 68px", fontFamily: "sans-serif" }}>
         <div style={{ display: "flex", fontSize: 26, fontWeight: 700, color: "#16161d" }}>
-          model<span style={{ color: "#6d4aff" }}>grep</span>
+          model<span style={{ color: "#0a0a0a" }}>grep</span>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 24, marginTop: 40 }}>

@@ -1,20 +1,12 @@
 import Link from "next/link";
 import { BarChart3, BookOpen, GitCompareArrows, Sparkles, Trophy } from "lucide-react";
 
-// Brand mark — a gradient prompt tile: chevron + match cursor. "grep, on a
-// gradient." The unique gradient id is fine to repeat across instances.
+// Brand mark — a sharp monochrome prompt glyph. Restraint over decoration.
 export function Mark({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden>
-      <defs>
-        <linearGradient id="mgMark" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#7d5cff" />
-          <stop offset="1" stopColor="#5a32f0" />
-        </linearGradient>
-      </defs>
-      <rect width="100" height="100" rx="28" fill="url(#mgMark)" />
-      <path d="M31 33 L51 50 L31 67" fill="none" stroke="#ffffff" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="55" y="58" width="24" height="10" rx="5" fill="#ffffff" />
+      <rect width="100" height="100" rx="22" fill="#0a0a0a" />
+      <path d="M35 33 L55 50 L35 67" fill="none" stroke="#ffffff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
