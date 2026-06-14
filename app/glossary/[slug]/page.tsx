@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GLOSSARY, getTerm } from "@/lib/glossary";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 
 type Params = { slug: string };
 
@@ -46,7 +45,6 @@ export default async function GlossaryTermPage({ params }: { params: Promise<Par
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <div className="mx-auto max-w-[760px]">
 

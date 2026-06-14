@@ -5,7 +5,6 @@ import { COLLECTIONS } from "@/lib/collections";
 import { resolveFacet, makerOptions } from "@/lib/facets";
 import { AnswerBox } from "@/components/AnswerBox";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 import { OwnerAvatar } from "@/components/ui";
 import { fmtMonth, fmtPrice, fmtThroughput, modelOwner } from "@/lib/format";
 import type { Model } from "@/lib/types";
@@ -80,7 +79,6 @@ export default async function BestHub() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <h1 className="font-display mt-7 text-[32px] font-bold leading-tight text-ink sm:text-[38px]">Best LLMs, ranked</h1>
         <AnswerBox answer={answer} updated={updated} />

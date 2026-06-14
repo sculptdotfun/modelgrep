@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BookText, GitCompareArrows, Sparkles } from "lucide-react";
 import { COLLECTIONS } from "@/lib/collections";
 import { BLOG_POSTS } from "@/lib/blog";
-import { Mark } from "./SiteHeader";
+import { Mark } from "./SiteNav";
 
 export function Footer() {
   return (

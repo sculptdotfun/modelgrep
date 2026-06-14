@@ -3,6 +3,24 @@ import type { Capabilities } from "@/lib/types";
 import { type Tier, tierColor } from "@/lib/format";
 import { ownerColor } from "@/lib/owners";
 
+// ---- rank pip (podium-tinted for the top three) -----------------------------
+
+const PODIUM = ["var(--color-gold)", "var(--color-silver)", "var(--color-bronze)"];
+
+export function RankPip({ rank }: { rank: number }) {
+  if (rank <= 3) {
+    return (
+      <span
+        className="inline-flex size-6 items-center justify-center rounded-md font-mono text-[11px] font-bold text-white shadow-sm"
+        style={{ background: PODIUM[rank - 1] }}
+      >
+        {rank}
+      </span>
+    );
+  }
+  return <span className="font-mono text-xs tabular-nums text-ink-3">{rank}</span>;
+}
+
 // ---- owner avatar (brand-colored initial) -----------------------------------
 
 export function OwnerAvatar({ owner, size = 44 }: { owner: string; size?: number }) {

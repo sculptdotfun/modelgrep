@@ -28,7 +28,7 @@ export default async function OG() {
         }}
       >
         <div style={{ display: "flex", fontSize: 30, fontWeight: 700, color: "#16161d" }}>
-          model<span style={{ color: "#5b3df5" }}>grep</span>
+          model<span style={{ color: "#6d4aff" }}>grep</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", marginTop: 28 }}>
           <div style={{ fontSize: 68, fontWeight: 800, color: "#16161d", letterSpacing: -2, lineHeight: 1.05 }}>

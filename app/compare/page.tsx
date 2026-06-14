@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCatalog } from "@/lib/catalog";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 import { OwnerAvatar } from "@/components/ui";
 import { modelOwner } from "@/lib/format";
 
@@ -40,7 +39,6 @@ export default async function CompareIndex() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <h1 className="font-display mt-8 text-[30px] font-bold text-ink sm:text-[34px]">Compare models</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
