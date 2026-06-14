@@ -3,10 +3,26 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCatalog } from "@/lib/catalog";
 import { groupByMaker } from "@/lib/makers";
+import { AnswerBox } from "@/components/AnswerBox";
 import { Footer } from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CapBadges, OwnerAvatar } from "@/components/ui";
-import { fmtContext, fmtLatency, fmtPrice, fmtThroughput } from "@/lib/format";
+import { fmtContext, fmtLatency, fmtMonth, fmtPrice, fmtThroughput } from "@/lib/format";
+
+// Maker-scoped ranking shortcuts — the intersection pages that capture
+// "fastest <maker> model", "cheapest <maker> model", etc.
+const MAKER_FACETS: { slug: string; label: (n: string) => string }[] = [
+  { slug: "smartest", label: (n) => `Smartest ${n}` },
+  { slug: "fastest", label: (n) => `Fastest ${n}` },
+  { slug: "cheapest", label: (n) => `Cheapest ${n}` },
+  { slug: "small", label: (n) => `Small & fast ${n}` },
+  { slug: "coding", label: (n) => `${n} for coding` },
+  { slug: "reasoning", label: (n) => `${n} reasoning` },
+];
+
+function shortName(name: string): string {
+  return name.includes(": ") ? name.split(": ").slice(1).join(": ") : name;
+}
 
 export const revalidate = 3600;
 
@@ -53,18 +69,42 @@ export default async function MakerPage({ params }: { params: Promise<Params> })
   const mk = await getMaker(slug);
   if (!mk) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: `${mk.displayName} models`,
-    numberOfItems: mk.models.length,
-    itemListElement: mk.models.slice(0, 25).map((m, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: m.name,
-      url: `https://modelgrep.com/models/${m.id}`,
-    })),
-  };
+  const updated = fmtMonth(new Date());
+
+  // BLUF answer — names the maker's standout model on each axis with real numbers.
+  const answerParts: string[] = [];
+  if (mk.bestIntel?.aa?.intelligence != null)
+    answerParts.push(`${mk.displayName}'s smartest model is ${shortName(mk.bestIntel.name)} (${mk.bestIntel.aa.intelligence.toFixed(1)} on the Intelligence Index)`);
+  if (mk.fastest)
+    answerParts.push(`its fastest is ${shortName(mk.fastest.name)} at ${fmtThroughput(mk.fastest.throughput)} tokens/sec`);
+  if (mk.cheapest)
+    answerParts.push(`its cheapest is ${shortName(mk.cheapest.name)} at ${fmtPrice(mk.cheapest.price_input)} per million input tokens`);
+  const answer =
+    (answerParts.join(", ").replace(/,([^,]*)$/, ", and$1") || `${mk.displayName} has ${mk.models.length} models tracked on modelgrep`) +
+    `. All ${mk.models.length} ${mk.displayName} models are compared below by intelligence, speed, latency, context and price.`;
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: `${mk.displayName} models`,
+      url: `https://modelgrep.com/makers/${mk.slug}`,
+      description: answer,
+      dateModified: new Date().toISOString(),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: `${mk.displayName} models`,
+      numberOfItems: mk.models.length,
+      itemListElement: mk.models.slice(0, 25).map((m, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: m.name,
+        url: `https://modelgrep.com/models/${m.id}`,
+      })),
+    },
+  ];
 
   return (
     <div className="min-h-screen">
@@ -88,6 +128,20 @@ export default async function MakerPage({ params }: { params: Promise<Params> })
               {mk.models.length} models tracked · ranked by intelligence, speed &amp; price
             </p>
           </div>
+        </div>
+
+        <AnswerBox answer={answer} updated={updated} />
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {MAKER_FACETS.map((fct) => (
+            <Link
+              key={fct.slug}
+              href={`/best/${fct.slug}/${mk.slug}`}
+              className="rounded-md border border-line bg-surface px-3 py-1.5 text-[12px] font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-brand-ink"
+            >
+              {fct.label(mk.displayName)}
+            </Link>
+          ))}
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
