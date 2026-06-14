@@ -157,21 +157,44 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
 // Rows rendered before "Show all" — keeps SSR HTML and hydration light.
 const INITIAL_ROWS = 60;
 
-export function ModelTable({ models }: { models: LiteModel[] }) {
+// Intelligence heatmap key — orients newcomers to the only color-ranked column.
+const LEGEND: { tier: Tier; label: string }[] = [
+  { tier: "elite", label: "50+" },
+  { tier: "high", label: "35+" },
+  { tier: "mid", label: "20+" },
+  { tier: "low", label: "<20" },
+];
+
+function Legend() {
+  return (
+    <span className="hidden items-center gap-2.5 md:inline-flex">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-3">Intelligence</span>
+      <span className="flex items-center gap-2">
+        {LEGEND.map((l) => (
+          <span key={l.tier} className="inline-flex items-center gap-1">
+            <span className={clsx("size-2 rounded-[2px]", BAR_FILL[l.tier])} />
+            <span className="font-mono text-[10px] text-ink-3">{l.label}</span>
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+export function ModelTable({ models, benchmarked }: { models: LiteModel[]; benchmarked?: number }) {
   const filters = useFilters();
   const [showAll, setShowAll] = useState(false);
   const rows = useMemo(() => selectModels(models, filters), [models, filters]);
   const visible = showAll ? rows : rows.slice(0, INITIAL_ROWS);
 
   return (
-    <div className="rounded-lg border border-line bg-surface">
-      <div className="flex items-center justify-between rounded-t-lg border-b border-line px-4 py-2.5 text-xs text-ink-2">
+    <div className="card-shadow rounded-xl border border-line bg-surface">
+      <div className="flex items-center justify-between rounded-t-xl border-b border-line bg-surface px-4 py-3 text-xs text-ink-2">
         <span>
           <strong className="text-ink">{rows.length}</strong> models
+          {benchmarked != null && <span className="ml-2 hidden text-ink-3 sm:inline">· {benchmarked} benchmarked</span>}
         </span>
-        <span className="hidden font-mono text-[11px] text-ink-3 sm:inline">
-          ranked by {filters.sortKey.replace("_", " ")} · click a row →
-        </span>
+        <Legend />
       </div>
       <div>
         <table className="w-full border-collapse">
