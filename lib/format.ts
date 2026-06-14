@@ -105,3 +105,9 @@ export const daCategoryLabel: Record<string, string> = {
 export function modelOwner(id: string): string {
   return id.split("/")[0] ?? "";
 }
+
+// "June 2026" — used for visible freshness stamps (a GEO-16 ranking signal).
+export function fmtMonth(d: Date): string {
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  return `${months[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
