@@ -20,7 +20,6 @@ import { getCatalog, toLite } from "@/lib/catalog";
 import { fetchProviderCount } from "@/lib/openrouter";
 import { Dashboard } from "@/components/Dashboard";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 import { TopChart } from "@/components/TopChart";
 import { COLLECTIONS } from "@/lib/collections";
 import { resolveFacet } from "@/lib/facets";
@@ -150,10 +149,7 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <section className="hero-glow relative border-b border-line">
         <div className="pointer-events-none absolute inset-0 dot-grid opacity-[0.35] [mask-image:radial-gradient(80%_60%_at_50%_0%,#000,transparent)]" />
-        <div className="relative mx-auto w-full max-w-[1200px] px-5 pb-8 pt-6">
-          <SiteHeader />
-        </div>
-        <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 pb-14 pt-2 lg:grid-cols-[1fr_minmax(0,480px)]">
+        <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 pb-16 pt-14 lg:grid-cols-[1fr_minmax(0,480px)]">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/70 py-1 pl-2 pr-3 text-[11px] font-medium text-ink-2 backdrop-blur">
               <span className="relative flex size-2">

@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
         <div className="flex flex-col items-center py-28 text-center">
           <div className="font-mono text-[13px] font-semibold uppercase tracking-widest text-ink-3">404</div>
           <h1 className="font-display mt-3 text-[32px] font-bold text-ink">No matches found.</h1>

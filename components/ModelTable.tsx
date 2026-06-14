@@ -44,13 +44,20 @@ const BAR_FILL: Record<Tier, string> = {
   na: "bg-ink-3",
 };
 
-// Plain ranks; the top three carry weight through type, not decoration.
-function MedalRank({ rank }: { rank: number }) {
-  return (
-    <span className={clsx("font-mono text-xs tabular-nums", rank <= 3 ? "font-bold text-ink" : "text-ink-3")}>
-      {rank}
-    </span>
-  );
+// Podium rank badges for the top three — leaderboard vibe.
+const PODIUM = ["var(--color-gold)", "var(--color-silver)", "var(--color-bronze)"];
+function RankBadge({ rank }: { rank: number }) {
+  if (rank <= 3) {
+    return (
+      <span
+        className="inline-flex size-6 items-center justify-center rounded-md font-mono text-[11px] font-bold text-white shadow-sm"
+        style={{ background: PODIUM[rank - 1] }}
+      >
+        {rank}
+      </span>
+    );
+  }
+  return <span className="font-mono text-xs tabular-nums text-ink-3">{rank}</span>;
 }
 
 function SortHeader({ col, alwaysRight = true }: { col: Col; alwaysRight?: boolean }) {
@@ -60,7 +67,7 @@ function SortHeader({ col, alwaysRight = true }: { col: Col; alwaysRight?: boole
     <th className={clsx("select-none px-2 py-3 text-[10px] font-semibold uppercase tracking-wider", alwaysRight && "text-right", col.hideAt)}>
       <button
         onClick={() => setSort(col.key)}
-        className={clsx("inline-flex items-center gap-1 transition-colors", active ? "text-ink" : "text-ink-3 hover:text-ink-2")}
+        className={clsx("inline-flex items-center gap-1 transition-colors", active ? "text-brand" : "text-ink-3 hover:text-ink-2")}
       >
         {col.label}
         <span className={clsx("text-[7px]", active ? "opacity-100" : "opacity-0")}>{sortDir === "desc" ? "▼" : "▲"}</span>
@@ -88,15 +95,15 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
 
   return (
     <tr onClick={() => router.push(href)} className="group cursor-pointer border-t border-line transition-colors hover:bg-surface-2/60">
-      <td className="w-10 py-4 pl-4 pr-1 text-center align-middle">
-        <MedalRank rank={rank} />
+      <td className="w-12 py-4 pl-4 pr-1 text-center align-middle">
+        <RankBadge rank={rank} />
       </td>
 
       {/* The one flexible column: absorbs leftover width and truncates long
           names, so the table can never overflow its card. */}
       <td className="w-full max-w-0 py-4 pr-3 align-middle">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="size-2.5 shrink-0 rounded-[2px]" style={{ background: oc }} />
+          <span className="size-2.5 shrink-0 rounded-full" style={{ background: oc }} />
           <Link
             href={href}
             onClick={(e) => e.stopPropagation()}
@@ -198,16 +205,16 @@ export function ModelTable({ models, benchmarked }: { models: LiteModel[]; bench
       </div>
       <div>
         <table className="w-full border-collapse">
-          <thead className="sticky top-0 z-20 bg-surface/95 backdrop-blur">
+          <thead className="sticky top-14 z-20 bg-surface/95 backdrop-blur">
             <tr className="border-b border-line">
-              <th className="w-10 py-3 pl-4 pr-1 text-center text-[10px] font-semibold uppercase tracking-wider text-ink-3">#</th>
+              <th className="w-12 py-3 pl-4 pr-1 text-center text-[10px] font-semibold uppercase tracking-wider text-ink-3">#</th>
               <th className="py-3 pr-3 text-left text-[10px] font-semibold uppercase tracking-wider text-ink-3">Model</th>
               <th className="py-3 pr-4 text-right">
                 <button
                   onClick={() => filters.setSort("intelligence")}
                   className={clsx(
                     "inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider transition-colors",
-                    filters.sortKey === "intelligence" ? "text-ink" : "text-ink-3 hover:text-ink-2",
+                    filters.sortKey === "intelligence" ? "text-brand" : "text-ink-3 hover:text-ink-2",
                   )}
                 >
                   Intelligence

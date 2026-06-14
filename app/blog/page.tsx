@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BLOG_POSTS } from "@/lib/blog";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "Blog — Practical Guides for Working with LLMs",
@@ -22,7 +21,6 @@ export default function BlogIndex() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <h1 className="font-display mt-8 text-[32px] font-bold text-ink">Blog</h1>
         <p className="mt-2 text-[15px] text-ink-2">Practical guides for working with AI models.</p>

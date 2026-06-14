@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { getCatalog, getModel } from "@/lib/catalog";
 import { AnswerBox } from "@/components/AnswerBox";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 import { CapBadges, OwnerAvatar } from "@/components/ui";
 import { fmtContext, fmtLatency, fmtMonth, fmtPrice, fmtThroughput, modelOwner } from "@/lib/format";
 import type { Model } from "@/lib/types";
@@ -155,7 +154,6 @@ export default async function AlternativesPage({ params }: { params: Promise<Par
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <nav className="mt-5 text-xs text-ink-3">
           <Link href={`/models/${base.id}`} className="hover:text-ink-2">{base.id.split("/").slice(1).join("/")}</Link>

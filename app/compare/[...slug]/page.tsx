@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { getCatalog, getModel } from "@/lib/catalog";
 import { COMPARE_METRICS, winner } from "@/lib/compare";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 import { CapBadges, OwnerAvatar } from "@/components/ui";
 import { modelOwner } from "@/lib/format";
 import type { Model } from "@/lib/types";
@@ -119,7 +118,6 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <h1 className="font-display mt-6 text-center text-[28px] font-bold text-ink sm:text-[32px]">
           {a.name} <span className="text-ink-3">vs</span> {b.name}

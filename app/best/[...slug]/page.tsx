@@ -6,8 +6,7 @@ import { COLLECTIONS } from "@/lib/collections";
 import { resolveFacet, makerOptions, rowStats } from "@/lib/facets";
 import { AnswerBox } from "@/components/AnswerBox";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
-import { CapBadges, OwnerAvatar } from "@/components/ui";
+import { CapBadges, OwnerAvatar, RankPip } from "@/components/ui";
 import { fmtContext, fmtMonth, fmtPrice, fmtThroughput, modelOwner } from "@/lib/format";
 
 export const revalidate = 3600;
@@ -113,7 +112,6 @@ export default async function FacetPage({ params }: { params: Promise<Params> })
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <nav className="mt-5 text-xs text-ink-3">
           <Link href="/best" className="hover:text-ink-2">rankings</Link>
@@ -141,7 +139,7 @@ export default async function FacetPage({ params }: { params: Promise<Params> })
             return (
               <li key={m.id}>
                 <Link href={`/models/${m.id}`} className="group flex items-center gap-3 px-4 py-4 transition-colors hover:bg-surface-2/60">
-                  <span className="w-5 shrink-0 text-right font-mono text-xs tabular-nums text-ink-3">{i + 1}</span>
+                  <span className="flex w-6 shrink-0 justify-center"><RankPip rank={i + 1} /></span>
                   <OwnerAvatar owner={modelOwner(m.id)} size={30} />
                   <div className="min-w-0 flex-1">
                     <div title={m.id} className="truncate font-mono text-[13px] font-semibold text-ink group-hover:text-brand-ink">

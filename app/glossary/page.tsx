@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { GLOSSARY } from "@/lib/glossary";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "LLM Glossary — Context Windows, Benchmarks, Tokens & More",
@@ -21,7 +20,6 @@ export default function GlossaryIndex() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
 
         <h1 className="font-display mt-8 text-[30px] font-bold text-ink sm:text-[34px]">LLM glossary</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">

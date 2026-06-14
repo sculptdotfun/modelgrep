@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import clsx from "clsx";
 import { getCatalog, getModelDetail } from "@/lib/catalog";
 import { Footer } from "@/components/Footer";
-import { SiteHeader } from "@/components/SiteHeader";
 import { CapBadges, Metric, OwnerAvatar } from "@/components/ui";
 import { ownerColor } from "@/lib/owners";
 import {
@@ -266,7 +265,6 @@ export default async function ModelPage({ params }: { params: Promise<Params> })
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="mx-auto w-full max-w-[1200px] px-5 py-7">
-        <SiteHeader />
         <nav className="mb-5 mt-6 text-xs text-ink-3">
           <Link href="/" className="hover:text-ink-2">
             models
