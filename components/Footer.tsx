@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BookText, GitCompareArrows, Sparkles } from "lucide-react";
 import { COLLECTIONS } from "@/lib/collections";
 import { BLOG_POSTS } from "@/lib/blog";
 import { Mark } from "./SiteHeader";
@@ -50,14 +51,14 @@ export function Footer() {
             <div>
               <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Browse</div>
               <div className="flex flex-col gap-1.5">
-                <Link href="/new" className="text-[13px] text-ink-2 hover:text-brand-ink">
-                  New models
+                <Link href="/new" className="flex items-center gap-1.5 text-[13px] text-ink-2 hover:text-brand-ink">
+                  <Sparkles className="size-3.5 text-ink-3" strokeWidth={2} /> New models
                 </Link>
-                <Link href="/compare" className="text-[13px] text-ink-2 hover:text-brand-ink">
-                  Compare models
+                <Link href="/compare" className="flex items-center gap-1.5 text-[13px] text-ink-2 hover:text-brand-ink">
+                  <GitCompareArrows className="size-3.5 text-ink-3" strokeWidth={2} /> Compare models
                 </Link>
-                <Link href="/glossary" className="text-[13px] text-ink-2 hover:text-brand-ink">
-                  LLM glossary
+                <Link href="/glossary" className="flex items-center gap-1.5 text-[13px] text-ink-2 hover:text-brand-ink">
+                  <BookText className="size-3.5 text-ink-3" strokeWidth={2} /> LLM glossary
                 </Link>
                 {["openai", "anthropic", "google", "qwen", "deepseek", "meta-llama"].map((o) => (
                   <Link key={o} href={`/makers/${o}`} className="text-[13px] text-ink-2 hover:text-brand-ink">

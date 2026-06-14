@@ -56,14 +56,19 @@ export default async function FacetPage({ params }: { params: Promise<Params> })
   const updated = fmtMonth(new Date());
   const top = ranked[0];
 
-  // Winner stat strip for the answer box (evidence density).
+  // Winner stat strip for the answer box (evidence density). Deduped by label so
+  // the headline metric isn't repeated (e.g. Speed on a speed-ranked page).
   const stats: { label: string; value: string }[] = [];
   if (top) {
-    stats.push({ label: base.metricLabel, value: base.display(top) });
-    if (top.aa?.intelligence != null) stats.push({ label: "Intelligence", value: top.aa.intelligence.toFixed(1) });
-    if (top.throughput > 0) stats.push({ label: "Speed", value: `${fmtThroughput(top.throughput)} t/s` });
-    if (top.price_input != null) stats.push({ label: "Input /M", value: fmtPrice(top.price_input) });
-    if (top.context_length) stats.push({ label: "Context", value: fmtContext(top.context_length) });
+    const raw = [
+      { label: base.metricLabel, value: base.display(top) },
+      top.aa?.intelligence != null ? { label: "Intelligence", value: top.aa.intelligence.toFixed(1) } : null,
+      top.throughput > 0 ? { label: "Speed", value: `${fmtThroughput(top.throughput)} t/s` } : null,
+      top.price_input != null ? { label: "Input /M", value: fmtPrice(top.price_input) } : null,
+      top.context_length ? { label: "Context", value: fmtContext(top.context_length) } : null,
+    ].filter((s): s is { label: string; value: string } => s != null);
+    const seen = new Set<string>();
+    for (const s of raw) if (!seen.has(s.label)) (seen.add(s.label), stats.push(s));
   }
 
   const jsonLd = [
