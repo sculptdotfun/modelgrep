@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getCatalog } from "@/lib/catalog";
 import { COLLECTIONS } from "@/lib/collections";
+import { makerOptions } from "@/lib/facets";
 import { BLOG_POSTS } from "@/lib/blog";
 import { GLOSSARY } from "@/lib/glossary";
 import { groupByMaker } from "@/lib/makers";
@@ -20,12 +21,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: m.aa?.intelligence != null ? 0.8 : 0.6,
   }));
 
-  const collectionUrls: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
-    url: `${BASE}/best/${c.slug}`,
+  // Base rankings (single axis) + the synthetic "small & fast" ranking.
+  const bases = [...COLLECTIONS.map((c) => c.slug), "small"];
+  const collectionUrls: MetadataRoute.Sitemap = bases.map((slug) => ({
+    url: `${BASE}/best/${slug}`,
     lastModified: now,
     changeFrequency: "daily",
     priority: 0.7,
   }));
+
+  // Intersection pages — every ranking × the top makers. The long-tail of
+  // "fastest anthropic model", "cheapest openai model", "small fast X model".
+  const topMakers = makerOptions(models).slice(0, 12);
+  const facetUrls: MetadataRoute.Sitemap = [];
+  for (const slug of bases) {
+    for (const mk of topMakers) {
+      facetUrls.push({
+        url: `${BASE}/best/${slug}/${mk.slug}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
+    }
+  }
+
+  // Alternatives pages for the most-searched models.
+  const altUrls: MetadataRoute.Sitemap = [...models]
+    .filter((m) => m.aa?.intelligence != null)
+    .sort((a, b) => b.aa!.intelligence! - a.aa!.intelligence!)
+    .slice(0, 60)
+    .map((m) => ({
+      url: `${BASE}/alternatives/${m.id}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    }));
 
   // Pre-render-worthy comparison pages: all pairs among the top models.
   const top = models
@@ -76,11 +106,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: BASE, lastModified: now, changeFrequency: "hourly", priority: 1 },
+    { url: `${BASE}/best`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE}/new`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/compare`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
     ...collectionUrls,
+    ...facetUrls,
     ...makerUrls,
     ...modelUrls,
+    ...altUrls,
     ...compareUrls,
     ...blogUrls,
     ...glossaryUrls,

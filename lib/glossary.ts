@@ -161,6 +161,156 @@ export const GLOSSARY: GlossaryTerm[] = [
       { label: "Smartest LLMs", href: "/best/smartest" },
     ],
   },
+  {
+    slug: "parameters",
+    term: "Parameters (model size)",
+    short:
+      "The trained weights inside a model, counted in billions (B). More parameters generally means more capability — and more cost and latency to run.",
+    body: [
+      "A model's parameters are the numbers it learned during training — the knobs that encode everything it knows. Count is quoted in billions: an 8B model has 8 billion weights, a 70B model has 70 billion. It's the closest thing to a model's \"size.\"",
+      "More parameters usually means more capability, but also more memory, higher price and slower inference. That's why labs ship tiers: a small 8B model for cheap high-volume work, a large flagship for the hardest tasks. The frontier closed models (GPT, Claude, Gemini) don't disclose parameter counts at all — so for them, \"small\" means the efficient tier (Haiku, mini, Flash), not a public number.",
+      "Don't over-index on raw size. Architecture, training data and post-training matter just as much: a well-trained 30B model routinely beats an older 70B one. Judge by benchmarks and price-performance, not parameter count alone.",
+    ],
+    related: [
+      { label: "Small & fast LLMs", href: "/best/small" },
+      { label: "Mixture of experts", href: "/glossary/mixture-of-experts" },
+    ],
+  },
+  {
+    slug: "mixture-of-experts",
+    term: "Mixture of experts (MoE)",
+    short:
+      "An architecture that splits a model into many specialized \"expert\" sub-networks and activates only a few per token — large total size, small active cost.",
+    body: [
+      "A mixture-of-experts model contains many expert sub-networks but routes each token to just a handful of them. A model can have 235B total parameters yet activate only ~22B per token — so it carries the knowledge of a huge model while costing closer to a small one to run.",
+      "This is why modern open-weight leaders (DeepSeek, Qwen, Llama 4, Mixtral) are nearly all MoE: it decouples capability from inference cost. The tradeoff is memory — you still have to load all the experts — and routing complexity.",
+      "When you see a model quoted as \"A active / B total\" (e.g. 37B active / 671B total), that's MoE. Price and speed track the active count; capability tracks the total.",
+    ],
+    related: [
+      { label: "Parameters", href: "/glossary/parameters" },
+      { label: "Best open-source LLMs", href: "/best/open-source" },
+    ],
+  },
+  {
+    slug: "function-calling",
+    term: "Function calling (tool use)",
+    short:
+      "A model capability for emitting structured calls to external tools or APIs — the foundation of agents, retrieval and anything that acts on the world.",
+    body: [
+      "Function calling (a.k.a. tool use) lets a model output a structured request — a function name plus JSON arguments — instead of plain text. Your code runs the function, returns the result, and the model continues. It's how an LLM checks the weather, queries a database, or runs a calculation it can't do reliably itself.",
+      "Reliable tool use is the single hardest requirement for agents, which chain dozens of calls and must pick the right tool with the right arguments every time. The Artificial Analysis Agentic Index and Tau²-Bench exist specifically to measure this.",
+      "Not every model supports it, and support quality varies widely — a model can be brilliant at prose yet unreliable at emitting valid tool calls. Filter for the tool-calling capability when building anything agentic.",
+    ],
+    related: [
+      { label: "Best LLMs for agents", href: "/best/agents" },
+      { label: "Reasoning models", href: "/glossary/reasoning-models" },
+    ],
+  },
+  {
+    slug: "retrieval-augmented-generation",
+    term: "Retrieval-augmented generation (RAG)",
+    short:
+      "A pattern that fetches relevant documents at query time and feeds them into the prompt, so the model answers from your data instead of memory.",
+    body: [
+      "RAG retrieves relevant chunks from a knowledge base — usually via vector search — and pastes them into the context before the model answers. It grounds responses in your own, current documents rather than the model's frozen training data, which cuts hallucination and sidesteps the knowledge cutoff.",
+      "RAG systems resend large, mostly-identical context on every query, so two model traits dominate the bill and the latency: a context window big enough to hold retrieved passages, and prompt caching to avoid re-billing the shared prefix. The two together decide whether a RAG product is cheap or ruinous at scale.",
+      "RAG and long context are complements, not rivals: retrieval narrows millions of tokens down to the few thousand that matter, and a capable context window reasons over them.",
+    ],
+    related: [
+      { label: "Prompt caching", href: "/glossary/prompt-caching" },
+      { label: "Longest-context LLMs", href: "/best/long-context" },
+    ],
+  },
+  {
+    slug: "knowledge-cutoff",
+    term: "Knowledge cutoff",
+    short:
+      "The date after which a model has no built-in knowledge — anything more recent must be supplied via tools, search or your prompt.",
+    body: [
+      "A model's knowledge cutoff is the last date covered by its training data. Ask about an event after that date and a model will either say it doesn't know or, worse, confidently invent an answer. Cutoffs typically lag the release date by several months to a year.",
+      "The cutoff only bounds built-in memory, not what a model can do. Give it web search, function calling or RAG and it works with live information regardless of when it was trained. For anything time-sensitive, design for retrieval rather than trusting recall.",
+      "Each model page on modelgrep lists the knowledge cutoff where the maker discloses it, alongside the release date — the gap between them is a useful tell about how current a model's baked-in knowledge is.",
+    ],
+    related: [
+      { label: "New model releases", href: "/new" },
+      { label: "Retrieval-augmented generation", href: "/glossary/retrieval-augmented-generation" },
+    ],
+  },
+  {
+    slug: "model-tiers",
+    term: "Model tiers (small, mid, frontier)",
+    short:
+      "Most labs ship a family at three rough tiers — a small fast one, a balanced one, and a flagship — so you can match capability to the job and the budget.",
+    body: [
+      "Nearly every lab ships a tiered family rather than one model. Anthropic has Haiku / Sonnet / Opus; OpenAI has nano / mini / full; Google has Flash / Pro. The pattern is the same: a small, fast, cheap tier for high volume; a flagship for the hardest reasoning; and a balanced middle that's the right default for most production work.",
+      "The small tier is the workhorse most teams underuse. For chat, classification, extraction and routing, a Haiku- or Flash-class model is often 5–20× cheaper and several times faster than the flagship, at quality the task can't actually distinguish. Reach for the flagship only where reasoning genuinely gates the outcome.",
+      "A common production pattern is to route by difficulty — cheap small model first, escalate to the flagship only when confidence is low — which captures most of the quality at a fraction of the cost.",
+    ],
+    related: [
+      { label: "Small & fast LLMs", href: "/best/small" },
+      { label: "LLM speed vs cost", href: "/blog/speed-vs-cost" },
+    ],
+  },
+  {
+    slug: "swe-bench",
+    term: "SWE-bench",
+    short:
+      "A coding benchmark of real GitHub issues — the model must produce a patch that makes the repo's actual test suite pass. The closest thing to a real-world software eval.",
+    body: [
+      "SWE-bench draws from genuine resolved issues in popular open-source Python repos. The model gets the codebase and the issue text and must generate a patch; it's scored by whether the repository's own hidden tests then pass. That makes it far harder to game than a multiple-choice quiz — and a strong proxy for agentic coding ability.",
+      "SWE-bench Verified is the human-validated subset most often reported, since the original set contained some unsolvable or ambiguous tasks. It's a core ingredient in the Artificial Analysis Coding Index.",
+      "Treat it as a measure of autonomous bug-fixing in real repos specifically. A high SWE-bench score signals a model that can navigate a codebase and use tools, which correlates with — but isn't identical to — good interactive code completion.",
+    ],
+    related: [
+      { label: "Best LLMs for coding", href: "/best/coding" },
+      { label: "Best LLMs for agents", href: "/best/agents" },
+    ],
+  },
+  {
+    slug: "multimodal",
+    term: "Multimodal model",
+    short:
+      "A model that handles more than text — most commonly accepting image input alongside text, and sometimes audio in or image/audio out.",
+    body: [
+      "A multimodal model accepts or produces more than one type of data. In practice this almost always means vision: the model reads images, screenshots, charts, PDFs and diagrams as naturally as text. Some also take audio input, and a few generate images or speech as output.",
+      "Vision unlocks whole categories of work text-only models can't touch — document and receipt extraction, UI understanding, chart reading, visual QA, accessibility. It's a hard requirement for those, and irrelevant for pure text pipelines, so filter for it deliberately.",
+      "\"Multimodal\" doesn't imply every modality. Check the specific input and output modalities on a model's page: many accept images but only emit text, and audio or image generation is still comparatively rare.",
+    ],
+    related: [
+      { label: "Best vision LLMs", href: "/best/vision" },
+      { label: "LLM leaderboard", href: "/" },
+    ],
+  },
+  {
+    slug: "fine-tuning",
+    term: "Fine-tuning",
+    short:
+      "Continuing training on your own examples to specialize a base model's style, format or domain — distinct from just writing a better prompt.",
+    body: [
+      "Fine-tuning updates a model's weights on a curated dataset of your examples, baking in a behavior rather than describing it in the prompt every time. It's the tool for locking in a house style, a rigid output format, or a narrow domain vocabulary that prompting alone keeps drifting away from.",
+      "It's usually the wrong first move. Prompting, few-shot examples and RAG solve most problems faster and cheaper, and a fine-tuned model is frozen — it won't benefit from the next base-model upgrade without redoing the work. Reach for it only after the cheaper levers plateau.",
+      "Fine-tuning needs open weights or a provider's tuning API. Open-weight models (on Hugging Face) give you full control; closed models offer it only where the maker exposes it.",
+    ],
+    related: [
+      { label: "Open weights", href: "/glossary/open-weights" },
+      { label: "Best open-source LLMs", href: "/best/open-source" },
+    ],
+  },
+  {
+    slug: "temperature",
+    term: "Temperature",
+    short:
+      "A sampling setting (typically 0–2) that controls randomness: low is deterministic and focused, high is varied and creative.",
+    body: [
+      "Temperature scales how sharply a model favors its most likely next token. Near 0 it picks the top choice almost every time — repeatable, focused, ideal for extraction, classification, code and anything with a single right answer. Higher values flatten the distribution, adding variety useful for brainstorming and creative writing.",
+      "There's no universally \"correct\" value — it's per-task. A rule of thumb: 0–0.3 for structured or factual work, 0.7–1.0 for open-ended generation. If you need reproducible outputs (tests, evals, caching), pin it low.",
+      "Temperature is independent of the model: the same setting behaves differently across models, and reasoning models often manage their own internal sampling, making the dial less impactful for them.",
+    ],
+    related: [
+      { label: "Reasoning models", href: "/glossary/reasoning-models" },
+      { label: "How to choose an LLM", href: "/blog/how-to-choose-llm" },
+    ],
+  },
 ];
 
 export function getTerm(slug: string): GlossaryTerm | undefined {

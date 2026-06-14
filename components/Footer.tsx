@@ -21,6 +21,12 @@ export function Footer() {
             <div>
               <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Rankings</div>
               <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
+                <Link href="/best" className="text-[13px] font-medium text-ink hover:text-brand-ink">
+                  All rankings
+                </Link>
+                <Link href="/best/small" className="text-[13px] text-ink-2 hover:text-brand-ink">
+                  Small &amp; Fast LLMs
+                </Link>
                 {COLLECTIONS.map((c) => (
                   <Link key={c.slug} href={`/best/${c.slug}`} className="text-[13px] text-ink-2 hover:text-brand-ink">
                     {c.title}
