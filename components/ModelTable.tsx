@@ -13,10 +13,8 @@ import {
   fmtLatency,
   fmtPrice,
   fmtThroughput,
-  intelTier,
   latencyTier,
   modelOwner,
-  type Tier,
 } from "@/lib/format";
 import { CapIcons } from "./ui";
 
@@ -36,28 +34,13 @@ const COLS: Col[] = [
   { key: "context_length", label: "Context" },
 ];
 
-const BAR_FILL: Record<Tier, string> = {
-  elite: "bg-elite",
-  high: "bg-high",
-  mid: "bg-mid",
-  low: "bg-low",
-  na: "bg-ink-3",
-};
-
-// Podium rank badges for the top three — leaderboard vibe.
-const PODIUM = ["var(--color-gold)", "var(--color-silver)", "var(--color-bronze)"];
+// Clean rank numerals; the top three carry weight through type, not decoration.
 function RankBadge({ rank }: { rank: number }) {
-  if (rank <= 3) {
-    return (
-      <span
-        className="inline-flex size-6 items-center justify-center rounded-md font-mono text-[11px] font-bold text-white shadow-sm"
-        style={{ background: PODIUM[rank - 1] }}
-      >
-        {rank}
-      </span>
-    );
-  }
-  return <span className="font-mono text-xs tabular-nums text-ink-3">{rank}</span>;
+  return (
+    <span className={clsx("font-mono text-[13px] tabular-nums", rank <= 3 ? "font-bold text-ink" : "text-ink-3")}>
+      {rank}
+    </span>
+  );
 }
 
 function SortHeader({ col, alwaysRight = true }: { col: Col; alwaysRight?: boolean }) {
@@ -89,7 +72,6 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
   const intel = m.aa?.intelligence ?? null;
   const coding = m.aa?.coding ?? null;
   const elo = m.da?.elo ?? null;
-  const it = intelTier(intel);
   const slow = latencyTier(m.latency) === "low";
   const free = (m.price_input ?? -1) === 0;
 
@@ -123,7 +105,7 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
         <div className="ml-auto flex w-[112px] items-center gap-2">
           <div className="h-[5px] flex-1 overflow-hidden rounded-[1px] bg-surface-2">
             {intel != null && (
-              <div className={clsx("h-full rounded-[1px]", BAR_FILL[it])} style={{ width: `${Math.min(100, (intel / 65) * 100)}%` }} />
+              <div className="h-full rounded-[1px] bg-ink" style={{ width: `${Math.min(100, (intel / 65) * 100)}%` }} />
             )}
           </div>
           <span className={clsx("w-9 text-right font-bold", NUM, intel != null ? "text-ink" : "text-ink-3")}>
@@ -164,30 +146,6 @@ function Row({ m, rank }: { m: LiteModel; rank: number }) {
 // Rows rendered before "Show all" — keeps SSR HTML and hydration light.
 const INITIAL_ROWS = 60;
 
-// Intelligence heatmap key — orients newcomers to the only color-ranked column.
-const LEGEND: { tier: Tier; label: string }[] = [
-  { tier: "elite", label: "50+" },
-  { tier: "high", label: "35+" },
-  { tier: "mid", label: "20+" },
-  { tier: "low", label: "<20" },
-];
-
-function Legend() {
-  return (
-    <span className="hidden items-center gap-2.5 md:inline-flex">
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-3">Intelligence</span>
-      <span className="flex items-center gap-2">
-        {LEGEND.map((l) => (
-          <span key={l.tier} className="inline-flex items-center gap-1">
-            <span className={clsx("size-2 rounded-[2px]", BAR_FILL[l.tier])} />
-            <span className="font-mono text-[10px] text-ink-3">{l.label}</span>
-          </span>
-        ))}
-      </span>
-    </span>
-  );
-}
-
 export function ModelTable({ models, benchmarked }: { models: LiteModel[]; benchmarked?: number }) {
   const filters = useFilters();
   const [showAll, setShowAll] = useState(false);
@@ -201,7 +159,9 @@ export function ModelTable({ models, benchmarked }: { models: LiteModel[]; bench
           <strong className="text-ink">{rows.length}</strong> models
           {benchmarked != null && <span className="ml-2 hidden text-ink-3 sm:inline">· {benchmarked} benchmarked</span>}
         </span>
-        <Legend />
+        <span className="hidden font-mono text-[11px] text-ink-3 sm:inline">
+          ranked by {filters.sortKey.replace("_", " ")} · click a row →
+        </span>
       </div>
       <div>
         <table className="w-full border-collapse">

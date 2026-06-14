@@ -94,8 +94,8 @@ export function TopChart({ models }: { models: LiteModel[] }) {
               <span className="relative h-2 flex-1 overflow-hidden rounded-[1px] bg-surface-2">
                 <span
                   key={metric}
-                  className="animate-grow absolute inset-y-0 left-0 rounded-[1px]"
-                  style={{ width: `${Math.max(3, w)}%`, background: oc, opacity: 0.85 }}
+                  className="animate-grow absolute inset-y-0 left-0 rounded-[1px] bg-ink"
+                  style={{ width: `${Math.max(3, w)}%` }}
                 />
               </span>
               <span className="w-16 shrink-0 whitespace-nowrap text-right font-mono text-[12px] font-semibold tabular-nums text-ink">

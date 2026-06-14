@@ -112,7 +112,7 @@ function NumberField({
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) {
   return (
     <label className="flex cursor-pointer items-center gap-2.5 text-[13px] text-ink-2">
-      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 accent-[#6d4aff]" />
+      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 accent-[#0a0a0a]" />
       {label}
     </label>
   );

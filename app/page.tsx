@@ -84,10 +84,10 @@ function BrowseByNeed({ models }: { models: Model[] }) {
             <Link
               key={c.slug}
               href={`/best/${c.slug}`}
-              className="card-shadow card-lift group rounded-2xl border border-line bg-surface p-4"
+              className="card-shadow card-lift group rounded-xl border border-line bg-surface p-4"
             >
               <div className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-xl bg-surface-2 text-ink-2 transition-colors group-hover:bg-brand/10 group-hover:text-brand">
+                <span className="flex size-9 items-center justify-center rounded-lg bg-surface-2 text-ink-2 transition-colors group-hover:bg-ink group-hover:text-white">
                   <Icon className="size-[18px]" strokeWidth={2} />
                 </span>
                 <div className="min-w-0 flex-1">
