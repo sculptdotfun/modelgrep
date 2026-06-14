@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
-/* modelgrep — sharp utility theme: flat surfaces, hairline borders, tight
-   type, one restrained accent. Decoration carries information or is removed. */
+/* modelgrep — Geist-flavored product surface: soft layered elevation, crisp
+   rounded cards, one violet accent, generous whitespace. */
 @theme {
-  --color-canvas: #fafafa;
+  --color-canvas: #fbfbfc;
   --color-surface: #ffffff;
-  --color-surface-2: #f4f4f5;
-  --color-line: #e7e7ea;
-  --color-line-strong: #d4d4d8;
-  --color-ink: #101014;
-  --color-ink-2: #51525c;
+  --color-surface-2: #f5f5f7;
+  --color-line: #ececef;
+  --color-line-strong: #dcdce1;
+  --color-ink: #0a0a0b;
+  --color-ink-2: #52525b;
   --color-ink-3: #8e8f98;
-  --color-brand: #5b3df5;
-  --color-brand-ink: #4a2fe0;
+  --color-brand: #6c5cf7;
+  --color-brand-ink: #5b3df5;
 
   /* metric tiers tuned for white backgrounds */
   --color-elite: #047857;
@@ -20,8 +20,12 @@
   --color-mid: #b45309;
   --color-low: #be123c;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, "JetBrains Mono", monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* soft, layered elevation — the core of the prettier surface */
+  --shadow-soft: 0 1px 2px rgba(10, 10, 11, 0.04), 0 1px 3px rgba(10, 10, 11, 0.06);
+  --shadow-lift: 0 4px 14px rgba(10, 10, 11, 0.08), 0 2px 6px rgba(10, 10, 11, 0.05);
 }
 
 :root {
@@ -35,13 +39,13 @@ html {
 body {
   background: var(--color-canvas);
   color: var(--color-ink);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: rgba(16, 16, 20, 0.9);
+  background: rgba(10, 10, 11, 0.92);
   color: #fff;
 }
 
@@ -66,32 +70,97 @@ body {
 }
 
 .font-mono {
-  font-family: var(--font-mono), ui-monospace, "JetBrains Mono", monospace;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-/* Display type is just the sans, set tight — sharp, no novelty face. */
+/* Display type — Geist set tight. */
 .font-display {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.035em;
 }
 
-/* Flat system: borders define surfaces; shadows are off. */
+/* Soft layered elevation on resting cards. */
 .card-shadow {
-  box-shadow: none;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Interactive cards sharpen their border instead of lifting. */
+/* Interactive cards lift on hover — translate + deepen the shadow. */
 .card-lift {
-  transition: border-color 0.12s ease;
+  transition:
+    box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.18s ease;
 }
 .card-lift:hover {
+  transform: translateY(-2px);
   border-color: var(--color-line-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Buttons — unified Geist-style primary/secondary. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.625rem;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--color-ink);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
+}
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-ink-2);
+  border: 1px solid var(--color-line);
+}
+.btn-secondary:hover {
+  color: var(--color-ink);
+  border-color: var(--color-line-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Signature backgrounds — dot grid + radial accent glow for heroes/sections. */
+.dot-grid {
+  background-image: radial-gradient(circle, var(--color-line-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.hero-glow {
+  background:
+    radial-gradient(60% 120% at 50% -10%, rgba(108, 92, 247, 0.12), transparent 60%),
+    radial-gradient(40% 80% at 90% 0%, rgba(108, 92, 247, 0.06), transparent 70%);
+}
+.glass {
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+}
+.gradient-ink {
+  background: linear-gradient(135deg, var(--color-ink) 30%, var(--color-brand-ink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-ink);
-  outline-offset: 1px;
-  border-radius: 2px;
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* Article typography for migrated blog content (raw HTML bodies). */

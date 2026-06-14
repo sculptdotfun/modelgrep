@@ -1,33 +1,51 @@
 import Link from "next/link";
+import {
+  ArrowRight,
+  Bot,
+  Brain,
+  Code2,
+  DollarSign,
+  Eye,
+  Gauge,
+  Gift,
+  Layers,
+  type LucideIcon,
+  Palette,
+  ScrollText,
+  Sparkles,
+  Timer,
+  Zap,
+} from "lucide-react";
 import { getCatalog, toLite } from "@/lib/catalog";
 import { fetchProviderCount } from "@/lib/openrouter";
 import { Dashboard } from "@/components/Dashboard";
 import { Footer } from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TopChart } from "@/components/TopChart";
-import { OwnerAvatar } from "@/components/ui";
 import { COLLECTIONS } from "@/lib/collections";
 import { resolveFacet } from "@/lib/facets";
 import { modelOwner } from "@/lib/format";
+import { ownerColor } from "@/lib/owners";
 import type { Model } from "@/lib/types";
 
 export const revalidate = 3600;
 
-// One-line intent descriptor per ranking — the "what am I optimizing for" hook
-// that turns a bare collection title into a scannable decision.
-const NEED_HINT: Record<string, string> = {
-  smartest: "Highest intelligence index",
-  coding: "Best at real software tasks",
-  cheapest: "Lowest price per token",
-  fastest: "Most tokens per second",
-  reasoning: "Deepest step-by-step thinking",
-  agents: "Best at tool use & planning",
-  "long-context": "Largest context window",
-  vision: "Reads images & documents",
-  free: "Capable at zero cost",
-  "lowest-latency": "Fastest to first token",
-  "open-source": "Self-hostable open weights",
-  design: "Best UI & frontend output",
+// One-line intent descriptor + icon per ranking — turns a bare collection title
+// into a scannable, iconic decision.
+const NEED: Record<string, { hint: string; Icon: LucideIcon }> = {
+  small: { hint: "Cheap, fast, efficient tier", Icon: Zap },
+  smartest: { hint: "Highest intelligence index", Icon: Brain },
+  coding: { hint: "Best at real software tasks", Icon: Code2 },
+  cheapest: { hint: "Lowest price per token", Icon: DollarSign },
+  fastest: { hint: "Most tokens per second", Icon: Gauge },
+  reasoning: { hint: "Deepest step-by-step thinking", Icon: Sparkles },
+  agents: { hint: "Best at tool use & planning", Icon: Bot },
+  "long-context": { hint: "Largest context window", Icon: ScrollText },
+  vision: { hint: "Reads images & documents", Icon: Eye },
+  free: { hint: "Capable at zero cost", Icon: Gift },
+  "lowest-latency": { hint: "Fastest to first token", Icon: Timer },
+  "open-source": { hint: "Self-hostable open weights", Icon: Layers },
+  design: { hint: "Best UI & frontend output", Icon: Palette },
 };
 
 // "Browse by need" — an intent-based entry layer between the hero and the dense
@@ -51,30 +69,40 @@ function BrowseByNeed({ models }: { models: Model[] }) {
   ];
 
   return (
-    <section className="mx-auto w-full max-w-[1200px] px-5 pb-2 pt-10">
-      <div className="mb-4 flex items-baseline justify-between">
-        <h2 className="font-display text-[20px] font-bold tracking-tight text-ink">Browse by need</h2>
-        <span className="text-[12px] text-ink-3">Pick what you&apos;re optimizing for</span>
+    <section className="mx-auto w-full max-w-[1200px] px-5 pb-2 pt-12">
+      <div className="mb-5 flex items-end justify-between">
+        <div>
+          <h2 className="font-display text-[22px] font-bold tracking-tight text-ink">Browse by need</h2>
+          <p className="mt-1 text-[13px] text-ink-3">Pick what you&apos;re optimizing for — each lands on a ranked answer.</p>
+        </div>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map(({ c, top }) => {
           const shortName = top.name.includes(": ") ? top.name.split(": ").slice(1).join(": ") : top.name;
+          const meta = NEED[c.slug];
+          const Icon = meta?.Icon ?? Sparkles;
           return (
             <Link
               key={c.slug}
               href={`/best/${c.slug}`}
-              className="card-shadow card-lift group flex items-center gap-3.5 rounded-lg border border-line bg-surface p-4"
+              className="card-shadow card-lift group rounded-2xl border border-line bg-surface p-4"
             >
-              <OwnerAvatar owner={modelOwner(top.id)} size={36} />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[14px] font-semibold text-ink group-hover:text-brand-ink">{c.title}</span>
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-xl bg-surface-2 text-ink-2 transition-colors group-hover:bg-brand/10 group-hover:text-brand">
+                  <Icon className="size-[18px]" strokeWidth={2} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[14px] font-semibold text-ink group-hover:text-brand-ink">{c.title}</div>
+                  <div className="mt-0.5 truncate text-[12px] text-ink-3">{meta?.hint ?? c.metricLabel}</div>
                 </div>
-                <div className="mt-0.5 truncate text-[12px] text-ink-3">{NEED_HINT[c.slug] ?? c.metricLabel}</div>
+                <ArrowRight className="size-4 -translate-x-1 text-ink-3 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" strokeWidth={2} />
               </div>
-              <div className="shrink-0 text-right">
-                <div className="truncate font-mono text-[12px] font-medium text-ink-2 group-hover:text-ink">#1 {shortName}</div>
-                <div className="font-mono text-[13px] font-bold tabular-nums text-ink">{c.display(top)}</div>
+              <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3">
+                <span className="flex min-w-0 items-center gap-1.5">
+                  <span className="size-2 shrink-0 rounded-[3px]" style={{ background: ownerColor(modelOwner(top.id)) }} />
+                  <span className="truncate font-mono text-[11.5px] text-ink-2">#1 {shortName}</span>
+                </span>
+                <span className="shrink-0 font-mono text-[13px] font-bold tabular-nums text-ink">{c.display(top)}</span>
               </div>
             </Link>
           );
@@ -84,11 +112,11 @@ function BrowseByNeed({ models }: { models: Model[] }) {
   );
 }
 
-function StatPill({ value, label, first }: { value: string | number; label: string; first?: boolean }) {
+function StatPill({ value, label }: { value: string | number; label: string }) {
   return (
-    <div className={`flex flex-col py-3 pr-8 ${first ? "" : "pl-8"}`}>
-      <span className="font-mono text-[22px] font-bold leading-none tracking-tight text-ink">{value}</span>
-      <span className="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-3">{label}</span>
+    <div className="card-shadow flex flex-col rounded-xl border border-line bg-surface px-4 py-3">
+      <span className="font-mono text-[23px] font-bold leading-none tracking-tight text-ink">{value}</span>
+      <span className="mt-2 text-[10px] uppercase tracking-widest text-ink-3">{label}</span>
     </div>
   );
 }
@@ -120,49 +148,45 @@ export default async function Home() {
   return (
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
-      <section className="border-b border-line bg-surface">
-        <div className="mx-auto w-full max-w-[1200px] px-5 pb-8 pt-6">
+      <section className="hero-glow relative border-b border-line">
+        <div className="pointer-events-none absolute inset-0 dot-grid opacity-[0.35] [mask-image:radial-gradient(80%_60%_at_50%_0%,#000,transparent)]" />
+        <div className="relative mx-auto w-full max-w-[1200px] px-5 pb-8 pt-6">
           <SiteHeader />
         </div>
-        <div className="mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 pb-12 lg:grid-cols-[1fr_minmax(0,480px)]">
+        <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 pb-14 pt-2 lg:grid-cols-[1fr_minmax(0,480px)]">
           <div>
-            <div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-widest text-ink-3">
-              <span className="size-1.5 rounded-full bg-elite" />
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/70 py-1 pl-2 pr-3 text-[11px] font-medium text-ink-2 backdrop-blur">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-elite opacity-60" />
+                <span className="relative inline-flex size-2 rounded-full bg-elite" />
+              </span>
               Live · updated hourly
             </div>
-            <h1 className="font-display text-[38px] font-bold leading-[1.02] text-ink sm:text-[48px]">
+            <h1 className="font-display text-[40px] font-bold leading-[1.0] tracking-tight text-ink sm:text-[52px]">
               Find &amp; understand
               <br />
-              every LLM.
+              <span className="gradient-ink">every LLM.</span>
             </h1>
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-2">
+            <p className="mt-5 max-w-md text-[15.5px] leading-relaxed text-ink-2">
               The LLM leaderboard — compare {stats.models}+ AI models by intelligence benchmark, speed, latency,
               price and context. Find the smartest, fastest, cheapest, or smallest model for the job.
             </p>
-            <div className="mt-7 flex items-stretch divide-x divide-line border-y border-line">
-              <StatPill value={stats.models} label="models" first />
+            <div className="mt-7 grid max-w-md grid-cols-3 gap-3">
+              <StatPill value={stats.models} label="models" />
               <StatPill value={stats.providers} label="providers" />
               <StatPill value={stats.benchmarked} label="benchmarked" />
             </div>
-            <div className="mt-5 flex flex-wrap gap-1.5">
-              <Link
-                href="/best"
-                className="rounded-md border border-ink bg-ink px-2.5 py-1 text-[12px] font-medium text-white transition-opacity hover:opacity-90"
-              >
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <Link href="/best" className="btn btn-primary h-9 px-4">
+                <Layers className="size-4" strokeWidth={2} />
                 All rankings
               </Link>
-              <Link
-                href="/best/small"
-                className="rounded-md border border-line px-2.5 py-1 text-[12px] font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
-              >
+              <Link href="/best/small" className="btn btn-secondary h-9 px-3.5">
+                <Zap className="size-[15px] text-brand" strokeWidth={2} />
                 Small &amp; Fast
               </Link>
-              {COLLECTIONS.slice(0, 4).map((c) => (
-                <Link
-                  key={c.slug}
-                  href={`/best/${c.slug}`}
-                  className="rounded-md border border-line px-2.5 py-1 text-[12px] font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
-                >
+              {COLLECTIONS.slice(0, 3).map((c) => (
+                <Link key={c.slug} href={`/best/${c.slug}`} className="btn btn-secondary h-9 px-3.5">
                   {c.title}
                 </Link>
               ))}
