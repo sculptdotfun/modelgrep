@@ -34,14 +34,20 @@ async function getJSON<T>(
   url: string,
   revalidate: number,
   fallback: T,
+  retries = 2,
 ): Promise<T> {
-  try {
-    const res = await fetch(url, { headers: HEADERS, next: { revalidate } });
-    if (!res.ok) return fallback;
-    return (await res.json()) as T;
-  } catch {
-    return fallback;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, { headers: HEADERS, next: { revalidate } });
+      if (res.ok) return (await res.json()) as T;
+      // 4xx other than 429 won't recover on retry; bail early. 429/5xx back off.
+      if (res.status !== 429 && res.status < 500) return fallback;
+    } catch {
+      // network/abort — retry
+    }
+    if (attempt < retries) await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
   }
+  return fallback;
 }
 
 // ---- pricing helpers ---------------------------------------------------------
