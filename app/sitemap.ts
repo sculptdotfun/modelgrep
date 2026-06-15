@@ -109,6 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/best`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE}/new`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/compare`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
+    { url: `${BASE}/api`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     ...collectionUrls,
     ...facetUrls,
     ...makerUrls,

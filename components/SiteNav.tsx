@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, BookOpen, GitCompareArrows, Sparkles, Trophy } from "lucide-react";
+import { BarChart3, BookOpen, Braces, GitCompareArrows, Sparkles, Trophy } from "lucide-react";
 
 // Brand mark — a sharp monochrome prompt glyph. Restraint over decoration.
 export function Mark({ size = 18 }: { size?: number }) {
@@ -17,6 +17,7 @@ const NAV = [
   { href: "/compare", label: "Compare", Icon: GitCompareArrows, hideSm: true },
   { href: "/new", label: "New", Icon: Sparkles },
   { href: "/blog", label: "Guides", Icon: BookOpen, hideSm: true },
+  { href: "/api", label: "API", Icon: Braces, hideSm: true },
 ];
 
 // Global sticky navigation — rendered once in the root layout, glass over
