@@ -1,8 +1,22 @@
+<div align="center">
+
+<a href="https://modelgrep.com"><img src="docs/og.png" alt="modelgrep — find & understand every LLM" width="720"></a>
+
 # modelgrep
 
-**Find and understand every LLM.** modelgrep aggregates [OpenRouter](https://openrouter.ai)'s catalog with independent benchmarks, live performance and pricing so you can compare 300+ large language models by intelligence, speed, latency, cost, context and capability — in one place.
+**Find and understand every LLM.** Compare 300+ models by benchmark, speed, latency, price, context and capability — in one place.
 
-🔗 **[modelgrep.com](https://modelgrep.com)** · 📡 **[Free JSON API](https://modelgrep.com/api)**
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fmodelgrep.com&label=modelgrep.com&up_message=live)](https://modelgrep.com)
+[![API](https://img.shields.io/badge/API-free%2C%20no%20key-0a0a0a)](https://modelgrep.com/api)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Stars](https://img.shields.io/github/stars/sculptdotfun/modelgrep?style=flat&logo=github)](https://github.com/sculptdotfun/modelgrep/stargazers)
+
+[**modelgrep.com**](https://modelgrep.com) · [**API docs**](https://modelgrep.com/api)
+
+</div>
+
+modelgrep aggregates [OpenRouter](https://openrouter.ai)'s catalog with independent benchmarks, live performance and pricing so you can compare large language models by intelligence, speed, latency, cost, context and capability.
 
 ---
 
@@ -76,8 +90,6 @@ app/        Next.js routes — leaderboard, /best, /compare, /makers, /models, /
 components/  UI (Dashboard, ModelTable, AnswerBox, SiteNav…)
 lib/         Data layer — openrouter client, catalog cache, collections, facets, api
 ```
-
-> `legacy/` contains the original Python/Flask prototype, kept for reference. The live site is the Next.js app above.
 
 ## License
 

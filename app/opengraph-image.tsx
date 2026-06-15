@@ -39,7 +39,7 @@ export default async function OG() {
           </div>
         </div>
         <div style={{ display: "flex", fontSize: 28, color: "#51535e", marginTop: 20 }}>
-          {models.length} models · {benchmarked} benchmarked · ranked by intelligence, speed &amp; price
+          {`${models.length} models · ${benchmarked} benchmarked · ranked by intelligence, speed & price`}
         </div>
         <div style={{ display: "flex", gap: 12, marginTop: "auto", flexWrap: "wrap" }}>
           {top.map((m) => (
